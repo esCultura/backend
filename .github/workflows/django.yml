@@ -27,4 +27,4 @@ jobs:
         pip3 install -r requirements.txt
     - name: Run Tests with coverage
       run: |
-        coverage run manage.py test && coverage report --fails-under=40
+        coverage run manage.py test && coverage report --fail-under=40
