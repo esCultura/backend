@@ -1,0 +1,15 @@
+TRANSLATIONS
+
+Aquest directori conte 3 subdirectoris amb les traduccions a catala, angles i castella dels textos que tenim en la aplicacio.
+
+Com funciona?
+- Durant el desenvolupament
+Tots els texts han de estar formats com: _('Text.....')
+Cal incloure al inici del fitxer: from django.utils.translation import gettext_lazy as _
+
+- Generacio dels fitxers .po
+Quan vulguem traduir els textos, executem des del env de python: django-admin makemessages --all
+(Es equivalent a django-admin makemessages --l ca (x3: ca, en, es))
+
+- Generacio dels fitxers .mo
+Per compilar les traduccions, executem des del env de python: django-admin compilemessages
