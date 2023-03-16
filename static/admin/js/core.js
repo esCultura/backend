@@ -8,7 +8,7 @@ function quickElement() {
         const textNode = document.createTextNode(arguments[2]);
         obj.appendChild(textNode);
     }
-    const len = arguments.length;
+  const len = arguments.length;
     for (let i = 3; i < len; i += 2) {
         obj.setAttribute(arguments[i], arguments[i + 1]);
     }
