@@ -1,11 +1,5 @@
-from django.shortcuts import render
-from django.shortcuts import get_object_or_404
-from django.utils.translation import gettext_lazy as _
-
-from rest_framework import viewsets, permissions
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.mixins import UpdateModelMixin, DestroyModelMixin
+from rest_framework import viewsets, filters
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Esdeveniment
 from .serializers import EsdevenimentSerializer
@@ -16,8 +10,15 @@ class EsdevenimentsView(viewsets.ModelViewSet):
     queryset = Esdeveniment.objects.all()
     serializer_class = EsdevenimentSerializer
     models = Esdeveniment
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = []
 
-    def get_object(self):
-        return Esdeveniment.obects.get_object_or_404(codi=self.request.codi)
-
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = {
+        'codi': ['in', 'exact'],
+        'nom': ['in', 'exact'],
+        'dataIni': ['exact'],
+        'dataFi': ['exact'],
+        'descripcio': ['contains']
+    }
+    search_fields = ['nom', 'descripcio']
+    ordering_fields = ['codi', 'nom', 'dataIni', 'dataFi']
