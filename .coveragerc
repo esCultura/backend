@@ -1,5 +1,5 @@
 [run]
-source=escultura/,events/,
+source=escultura/,esdeveniments/,interessos/,assistencies/
 omit=
     */env/*
     */migrations/*
