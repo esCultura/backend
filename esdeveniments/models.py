@@ -2,11 +2,32 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
-# Create your models here.
 class Esdeveniment(models.Model):
-    codi = models.AutoField(primary_key=True, verbose_name=_('Codi'))
+    codi = models.IntegerField(primary_key=True, verbose_name=_('Codi'))
     nom = models.CharField(max_length=100, null=False, blank=False, verbose_name=_('Nom'))
     dataIni = models.DateTimeField(null=True, blank=True, verbose_name=_('Data inici'))
     dataFi = models.DateTimeField(null=True, blank=True, verbose_name=_('Data fi'))
-    descripcio = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Descripcio'))
+    descripcio = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Descripció'))
+    entrades = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Entrades'))
+    horari = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Horari'))
+    enllacos = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Enllaços'))
+    imatges = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Imatges'))
+    provincia = models.CharField(max_length=100, null=True, blank=True, verbose_name=_('Província'))
+    comarca = models.CharField(max_length=100, null=True, blank=True, verbose_name=_('Comarca'))
+    municipi = models.CharField(max_length=100, null=True, blank=True, verbose_name=_('Municipi'))
+    latitud = models.FloatField(null=True, blank=True, verbose_name=_('Latitud'))
+    longitud = models.FloatField(null=True, blank=True, verbose_name=_('Longitud'))
+    espai = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Espai'))
+    email = models.EmailField(max_length=100, null=True, blank=True, verbose_name=_('Email contacte'))
+    telefon = models.CharField(max_length=100, null=True, blank=True, verbose_name=_('Telèfon contacte'))
+    url = models.CharField(max_length=100, null=True, blank=True, verbose_name=_('URL organitzador'))
 
+
+class Tematica(models.Model):
+    nom = models.CharField(primary_key=True, max_length=100, verbose_name=_('Nom'))
+    descripcio = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Descripció'))
+
+
+class TematicaEsdeveniment(models.Model):
+    esdeveniment = models.ForeignKey(Esdeveniment, on_delete=models.CASCADE)
+    tematica = models.ForeignKey(Tematica, on_delete=models.CASCADE)
