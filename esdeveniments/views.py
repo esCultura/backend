@@ -29,7 +29,7 @@ class EsdevenimentsView(viewsets.ModelViewSet):
         'latitud': ['exact', 'range'],
         'longitud': ['exact', 'range'],
         'espai': ['exact', 'isnull'],
-        'espai': ['isnull'],
+        'email': ['isnull'],
         'telefon': ['isnull'],
         'url': ['isnull'],
     }
