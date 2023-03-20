@@ -14,11 +14,24 @@ class EsdevenimentsView(viewsets.ModelViewSet):
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = {
-        'codi': ['in', 'exact'],
-        'nom': ['in', 'exact'],
-        'dataIni': ['exact'],
-        'dataFi': ['exact'],
-        'descripcio': ['contains']
+        'codi': ['exact', 'in'],
+        'nom': ['exact', 'in'],
+        'dataIni': ['exact', 'range'],
+        'dataFi': ['exact', 'range'],
+        'descripcio': ['contains'],
+        'entrades': ['isnull'],
+        'horari': ['isnull'],
+        'enllacos': ['isnull'],
+        'imatges': ['isnull'],
+        'provincia': ['exact', 'in'],
+        'comarca': ['exact', 'in'],
+        'municipi': ['exact', 'in'],
+        'latitud': ['exact', 'range'],
+        'longitud': ['exact', 'range'],
+        'espai': ['exact', 'isnull'],
+        'espai': ['isnull'],
+        'telefon': ['isnull'],
+        'url': ['isnull'],
     }
-    search_fields = ['nom', 'descripcio']
-    ordering_fields = ['codi', 'nom', 'dataIni', 'dataFi']
+    search_fields = ['nom', 'descripcio', 'provincia', 'comarca', 'municipi', 'espai']
+    ordering_fields = ['codi', 'nom', 'dataIni', 'dataFi', 'provincia', 'comarca', 'municipi', 'latitud', 'lonngitud', 'espai']
