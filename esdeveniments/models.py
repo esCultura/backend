@@ -13,7 +13,7 @@ class Esdeveniment(models.Model):
     dataIni = models.DateTimeField(null=True, blank=True, verbose_name=_('Data inici'))
     dataFi = models.DateTimeField(null=True, blank=True, verbose_name=_('Data fi'))
     descripcio = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Descripció'))
-    tematiques = models.ManyToManyField(Tematica)
+    tematiques = models.ManyToManyField(Tematica, null=True, blank=True)
     entrades = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Entrades'))
     horari = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Horari'))
     enllacos = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Enllaços'))
