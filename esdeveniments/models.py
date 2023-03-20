@@ -2,12 +2,18 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
+class Tematica(models.Model):
+    nom = models.CharField(primary_key=True, max_length=100, verbose_name=_('Nom'))
+    descripcio = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Descripció'))
+
+
 class Esdeveniment(models.Model):
     codi = models.IntegerField(primary_key=True, verbose_name=_('Codi'))
     nom = models.CharField(max_length=100, null=False, blank=False, verbose_name=_('Nom'))
     dataIni = models.DateTimeField(null=True, blank=True, verbose_name=_('Data inici'))
     dataFi = models.DateTimeField(null=True, blank=True, verbose_name=_('Data fi'))
     descripcio = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Descripció'))
+    tematiques = models.ManyToManyField(Tematica)
     entrades = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Entrades'))
     horari = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Horari'))
     enllacos = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Enllaços'))
@@ -21,13 +27,3 @@ class Esdeveniment(models.Model):
     email = models.EmailField(max_length=100, null=True, blank=True, verbose_name=_('Email contacte'))
     telefon = models.CharField(max_length=100, null=True, blank=True, verbose_name=_('Telèfon contacte'))
     url = models.CharField(max_length=100, null=True, blank=True, verbose_name=_('URL organitzador'))
-
-
-class Tematica(models.Model):
-    nom = models.CharField(primary_key=True, max_length=100, verbose_name=_('Nom'))
-    descripcio = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Descripció'))
-
-
-class TematicaEsdeveniment(models.Model):
-    esdeveniment = models.ForeignKey(Esdeveniment, on_delete=models.CASCADE)
-    tematica = models.ForeignKey(Tematica, on_delete=models.CASCADE)
