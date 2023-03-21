@@ -1,2 +1,7 @@
+from django.contrib import admin
+from .models import AssistenciaAEsdeveniment
 
-# Register your models here.
+
+@admin.register(AssistenciaAEsdeveniment)
+class AssistenciaAEsdeveniment(admin.ModelAdmin):
+    pass
