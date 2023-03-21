@@ -6,6 +6,10 @@ class Tematica(models.Model):
     nom = models.CharField(primary_key=True, max_length=100, verbose_name=_('Nom'))
     descripcio = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Descripció'))
 
+    class Meta:
+        # Per defecte, el nom és "Tematicas", el sobreescrivim
+        verbose_name_plural = _('Temàtiques')
+
 
 class Esdeveniment(models.Model):
     codi = models.IntegerField(primary_key=True, verbose_name=_('Codi'))
@@ -13,7 +17,7 @@ class Esdeveniment(models.Model):
     dataIni = models.DateTimeField(null=True, blank=True, verbose_name=_('Data inici'))
     dataFi = models.DateTimeField(null=True, blank=True, verbose_name=_('Data fi'))
     descripcio = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Descripció'))
-    tematiques = models.ManyToManyField(Tematica, null=True, blank=True)
+    tematiques = models.ManyToManyField(Tematica)
     entrades = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Entrades'))
     horari = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Horari'))
     enllacos = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Enllaços'))
