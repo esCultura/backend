@@ -1,2 +1,9 @@
+from rest_framework import viewsets
 
-# Create your views here.
+from .models import AssistenciaAEsdeveniment
+from .serializers import AssistenciaAEsdevenimentSerializer
+
+
+class AssistenciaAEsdevenimentView(viewsets.ModelViewSet):
+    queryset = AssistenciaAEsdeveniment.objects.all()
+    serializer_class = AssistenciaAEsdevenimentSerializer
