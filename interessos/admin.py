@@ -1,11 +1,11 @@
 from django.contrib import admin
-from .models import InteresEnEsdeveniment, InteresEnTematica
+from . import models
 
 
-@admin.register(InteresEnEsdeveniment)
+@admin.register(models.InteresEnEsdeveniment)
 class InteresEnEsdeveniment(admin.ModelAdmin):
     pass
 
-@admin.register(InteresEnTematica)
+@admin.register(models.InteresEnTematica)
 class InteresEnTematica(admin.ModelAdmin):
     pass

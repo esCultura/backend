@@ -1,5 +1,5 @@
 from rest_framework import routers
-from .views import *
+from .views import PerfilView
 
 router = routers.DefaultRouter()
 

@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import AssistenciaAEsdeveniment
+from . import models
 
 
-@admin.register(AssistenciaAEsdeveniment)
+@admin.register(models.AssistenciaAEsdeveniment)
 class AssistenciaAEsdeveniment(admin.ModelAdmin):
     pass
