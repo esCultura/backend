@@ -1,7 +1,7 @@
 import requests
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
-from esdeveniments.models import Esdeveniment
+from esdeveniments.models import Esdeveniment, Tematica
 
 
 def run():
@@ -45,9 +45,21 @@ def getEsdevenimentsDadesObertes():
             esdev.comarca = comarca_i_municipi[2]
             esdev.municipi = comarca_i_municipi[3]
 
-        # Aconseguim les temàtiques de l'esdeveniment
-        # ToDo
-
-        # Guardem l'entrada rebuda a la nostra BD
+        # Guardem l'entrada rebuda a la nostra BD. Ho hem de fer abans de definir les foreign keys,
+        # perquè si no no troba l'objecte i no ens les permet crear.
         esdev.save()
 
+        # Aconseguim les temàtiques de l'esdeveniment
+        # A l'API, hi ha 2 camps amb temàtiques: tags_mbits i tags_categor_es
+        # Els camps s'estructuren com: agenda:<tag>/<temàtica>,agenda:<tag>/<temàtica>,... (on <tag> és tags_mbits o tags_categor_es)
+        tots_tags = d['tags_mbits'] + ',' + d['tags_categor_es']
+        if tots_tags:
+            tags = tots_tags.split(",")
+            for tag in tags:
+                # Processem cada tag, agafant <temàtica>, posant la primera lletra en majúscules i
+                # separant les paraules (a la API separades per -)
+                tag_name = ' '.join(tag.split("/")[1].capitalize().split("-"))
+                # A continuació, busquem si ja tenim registrada la temàtica (per no sobreescriure-li els atributs
+                # que pugui tenir ja definits) i l'enllacem amb l'esdeveniment
+                tematica = Tematica.objects.get_or_create(nom=tag_name)[0]
+                esdev.tematiques.add(tematica)
