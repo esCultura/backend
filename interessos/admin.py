@@ -1,2 +1,11 @@
+from django.contrib import admin
+from . import models
 
-# Register your models here.
+
+@admin.register(models.InteresEnEsdeveniment)
+class InteresEnEsdeveniment(admin.ModelAdmin):
+    pass
+
+@admin.register(models.InteresEnTematica)
+class InteresEnTematica(admin.ModelAdmin):
+    pass
