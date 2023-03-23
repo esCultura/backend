@@ -31,3 +31,24 @@ class Esdeveniment(models.Model):
     email = models.EmailField(max_length=100, null=True, blank=True, verbose_name=_('Email contacte'))
     telefon = models.CharField(max_length=100, null=True, blank=True, verbose_name=_('Telèfon contacte'))
     url = models.CharField(max_length=100, null=True, blank=True, verbose_name=_('URL organitzador'))
+
+    def split_or_none(self, attr):
+        if attr:
+            return attr.split(',')
+        else:
+            return None
+
+    def get_enllacos(self):
+        return self.split_or_none(self.enllacos)
+
+    def get_imatges(self):
+        return self.split_or_none(self.imatges)
+
+    def set_imatges(self, imatges):
+        return ','.join(imatges)
+
+    def get_url(self):
+        return self.split_or_none(self.url)
+
+    def set_url(self, url):
+        return ','.join(url)
