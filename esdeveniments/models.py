@@ -2,6 +2,13 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
+def split_or_none(attr):
+    if attr:
+        return attr.split(',')
+    else:
+        return None
+
+
 class Tematica(models.Model):
     nom = models.CharField(primary_key=True, max_length=100, verbose_name=_('Nom'))
     descripcio = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Descripció'))
@@ -32,23 +39,11 @@ class Esdeveniment(models.Model):
     telefon = models.CharField(max_length=100, null=True, blank=True, verbose_name=_('Telèfon contacte'))
     url = models.CharField(max_length=100, null=True, blank=True, verbose_name=_('URL organitzador'))
 
-    def split_or_none(self, attr):
-        if attr:
-            return attr.split(',')
-        else:
-            return None
-
     def get_enllacos(self):
-        return self.split_or_none(self.enllacos)
+        return split_or_none(self.enllacos)
 
     def get_imatges(self):
-        return self.split_or_none(self.imatges)
-
-    def set_imatges(self, imatges):
-        return ','.join(imatges)
+        return split_or_none(self.imatges)
 
     def get_url(self):
-        return self.split_or_none(self.url)
-
-    def set_url(self, url):
-        return ','.join(url)
+        return split_or_none(self.url)
