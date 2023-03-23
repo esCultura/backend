@@ -90,7 +90,7 @@ DATABASES = {
         'NAME': 'postgres',
         'USER': 'esCultura',
         'PASSWORD': 'esculturapes',
-        'HOST': 'database-1.cc9za93r8ozm.us-west-2.rds.amazonaws.com',
+        'HOST': 'awseb-e-xw3n9qrvbm-stack-awsebrdsdatabase-j4w67q2ou5hm.cavbks5lfffh.us-west-2.rds.amazonaws.com',
         'PORT': 5432,
     }
 }
