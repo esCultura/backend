@@ -7,7 +7,7 @@ from .serializers import EsdevenimentSerializer
 
 # Create your views here.
 class EsdevenimentsView(viewsets.ModelViewSet):
-    queryset = Esdeveniment.objects.all()
+    queryset = Esdeveniment.objects.all().prefetch_related('tematiques')
     serializer_class = EsdevenimentSerializer
     models = Esdeveniment
     permission_classes = []
