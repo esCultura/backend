@@ -86,8 +86,12 @@ WSGI_APPLICATION = 'escultura.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'postgres',
+        'USER': 'esCultura',
+        'PASSWORD': 'esculturapes',
+        'HOST': 'database-1.cc9za93r8ozm.us-west-2.rds.amazonaws.com',
+        'PORT': 5432,
     }
 }
 
