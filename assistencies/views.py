@@ -15,3 +15,15 @@ class AssistenciaAEsdevenimentView(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['perfil', 'esdeveniment']
     ordering_fields = ['perfil', 'esdeveniment']
+
+    # Redefinició del mètode DELETE per tal de poder-lo realitzar a la ListView i a través de paràmetres, en aquest cas l'username i el codi de l'esdeveniment.
+    # (Les ListViews només suporten les operacions GET i POST, les DELETE requests només estan permeses a les DetailViews)
+    @action(methods=['delete'], detail=False)
+    def delete(self, request):
+        perfil = request.GET.get('perfil', None)
+        esdeveniment = request.GET.get('esdeveniment', None)
+        if(not (perfil is None or esdeveniment is None)):
+            interes = get_object_or_404(self.queryset, perfil=perfil, esdeveniment=esdeveniment)
+            interes.delete()
+            return Response(status=200, data={'message': f'S\'ha eliminat de forma correcta l\'assistència del perfil {perfil} a l\'esdeveniment amb codi {esdeveniment}'})
+        return Response(status=500, data={'error': 'La Request ha de tenir dos paràmetres: perfil (username del perfil) i esdeveniment (codi de l\'esdeveniment)', 'perfil indicat': perfil, 'esdeveniment indicat': esdeveniment})
