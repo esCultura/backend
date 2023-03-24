@@ -1,6 +1,7 @@
 import requests
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
+from datetime import date, timedelta
 from esdeveniments.models import Esdeveniment, Tematica
 
 
@@ -8,9 +9,14 @@ def run():
     getEsdevenimentsDadesObertes()
 
 
-def getEsdevenimentsDadesObertes():
+def getEsdevenimentsDadesObertes(where=None):
+    if not where:
+        ahir = date.today() - timedelta(days=1)
+        # Els codis dels esdeveniments s'estructuren de la següent manera
+        codi_ahir = ahir.strftime('%Y%m%d') + '000'
+        where = 'codi>=' + codi_ahir
     url = "https://analisi.transparenciacatalunya.cat/resource/rhpv-yr4f.json?" \
-          "$where=data_inici between '2023-03-19T12:00:00' and '2023-03-20T12:00:00'"
+          "$where=" + where
     response = requests.get(url)
     data = response.json()
 
@@ -32,15 +38,18 @@ def getEsdevenimentsDadesObertes():
         )
 
         # Tractem les dates per separat, perquè cal passar l'string que rebem a DateTime i definir-li la timezone
-        if d['data_inici']:
-            esdev.dataIni = timezone.make_aware(parse_datetime(d['data_inici']), timezone.get_current_timezone())
-        if d['data_fi']:
-            esdev.dataFi = timezone.make_aware(parse_datetime(d['data_fi']), timezone.get_current_timezone())
+        data_ini = d.get('data_inici', None)
+        if data_ini:
+            esdev.dataIni = timezone.make_aware(parse_datetime(data_ini), timezone.get_current_timezone())
+        data_fi = d.get('data_fi', None)
+        if data_fi:
+            esdev.dataFi = timezone.make_aware(parse_datetime(data_fi), timezone.get_current_timezone())
 
         # Aconseguim província, comarca i municipi
         # A l'API, aquest camp s'estructura com: agenda:ubicacions/<provincia>/<comarca>/<municipi>
-        if d['comarca_i_municipi']:
-            comarca_i_municipi = d['comarca_i_municipi'].split("/")
+        com_i_mun = d.get('comarca_i_municipi', None)
+        if com_i_mun:
+            comarca_i_municipi = com_i_mun.split("/")
             esdev.provincia = comarca_i_municipi[1]
             esdev.comarca = comarca_i_municipi[2]
             esdev.municipi = comarca_i_municipi[3]
@@ -52,14 +61,17 @@ def getEsdevenimentsDadesObertes():
         # Aconseguim les temàtiques de l'esdeveniment
         # A l'API, hi ha 2 camps amb temàtiques: tags_mbits i tags_categor_es
         # Els camps s'estructuren com: agenda:<tag>/<temàtica>,agenda:<tag>/<temàtica>,... (on <tag> és tags_mbits o tags_categor_es)
-        tots_tags = d['tags_mbits'] + ',' + d['tags_categor_es']
-        if tots_tags:
+        tags_ambits = d.get('tags_mbits', '')
+        tags_categories = d.get('tags_categor_es', '')
+        tots_tags = tags_ambits + ',' + tags_categories
+        if tots_tags != ',':
             tags = tots_tags.split(",")
             for tag in tags:
-                # Processem cada tag, agafant <temàtica>, posant la primera lletra en majúscules i
-                # separant les paraules (a la API separades per -)
-                tag_name = ' '.join(tag.split("/")[1].capitalize().split("-"))
-                # A continuació, busquem si ja tenim registrada la temàtica (per no sobreescriure-li els atributs
-                # que pugui tenir ja definits) i l'enllacem amb l'esdeveniment
-                tematica = Tematica.objects.get_or_create(nom=tag_name)[0]
-                esdev.tematiques.add(tematica)
+                if tag != '':
+                    # Processem cada tag, agafant <temàtica>, posant la primera lletra en majúscules i
+                    # separant les paraules (a la API separades per -)
+                    tag_name = ' '.join(tag.split("/")[1].capitalize().split("-"))
+                    # A continuació, busquem si ja tenim registrada la temàtica (per no sobreescriure-li els atributs
+                    # que pugui tenir ja definits) i l'enllacem amb l'esdeveniment
+                    tematica = Tematica.objects.get_or_create(nom=tag_name)[0]
+                    esdev.tematiques.add(tematica)
