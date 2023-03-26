@@ -1,4 +1,4 @@
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters, pagination
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import F, FloatField
 from django.db.models.functions import Sqrt
@@ -23,8 +23,21 @@ class FilterBackend(filters.BaseFilterBackend):
         return queryset
 
 
+class PaginationClass(pagination.LimitOffsetPagination):
+    max_limit = 1000  # default max limit
+
+    def get_limit(self, request):
+        if 'limit' in request.query_params:
+            try:
+                return int(request.query_params['limit'])
+            except ValueError:
+                pass
+        return self.max_limit
+
+
 class EsdevenimentsView(viewsets.ModelViewSet):
     queryset = Esdeveniment.objects.all().prefetch_related('tematiques')
+    pagination_class = PaginationClass
     serializer_class = EsdevenimentSerializer
     models = Esdeveniment
     permission_classes = []
