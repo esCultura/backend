@@ -1,4 +1,4 @@
-from rest_framework import viewsets, filters, pagination
+from rest_framework import viewsets, filters, pagination, response
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import F, FloatField
 from django.db.models.functions import Sqrt
@@ -33,6 +33,9 @@ class PaginationClass(pagination.LimitOffsetPagination):
             except ValueError:
                 pass
         return self.max_limit
+
+    def get_paginated_response(self, data):
+        return response.Response(data)
 
 
 class EsdevenimentsView(viewsets.ModelViewSet):
