@@ -88,7 +88,7 @@ def getEsdevenimentsDadesObertes(where=None):
             )
             getDates(d, esdev)
             getProvinciaComarcaMunicipi(d, esdev)
-            getTematiques()
+            getTematiques(d, esdev)
         except:
             try:
                 print("No s'ha pogut carregar l'esdeveniment " + d['codi'])
