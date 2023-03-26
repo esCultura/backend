@@ -19,11 +19,11 @@ class Tematica(models.Model):
 
 
 class Esdeveniment(models.Model):
-    codi = models.IntegerField(primary_key=True, verbose_name=_('Codi'))
+    codi = models.BigIntegerField(primary_key=True, verbose_name=_('Codi'))
     nom = models.CharField(max_length=100, null=False, blank=False, verbose_name=_('Nom'))
     dataIni = models.DateTimeField(null=True, blank=True, verbose_name=_('Data inici'))
     dataFi = models.DateTimeField(null=True, blank=True, verbose_name=_('Data fi'))
-    descripcio = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Descripció'))
+    descripcio = models.CharField(max_length=10000, null=True, blank=True, verbose_name=_('Descripció'))
     tematiques = models.ManyToManyField(Tematica)
     entrades = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Entrades'))
     horari = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Horari'))
@@ -37,7 +37,7 @@ class Esdeveniment(models.Model):
     espai = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('Espai'))
     email = models.EmailField(max_length=100, null=True, blank=True, verbose_name=_('Email contacte'))
     telefon = models.CharField(max_length=100, null=True, blank=True, verbose_name=_('Telèfon contacte'))
-    url = models.CharField(max_length=100, null=True, blank=True, verbose_name=_('URL organitzador'))
+    url = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('URL organitzador'))
 
     def get_enllacos(self):
         return split_or_none(self.enllacos)
