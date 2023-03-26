@@ -1,18 +1,35 @@
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
+from django.db.models import F, FloatField
+from django.db.models.functions import Sqrt
 
 from .models import Esdeveniment
 from .serializers import EsdevenimentSerializer
 
 
-# Create your views here.
+class FilterBackend(filters.BaseFilterBackend):
+    def filter_queryset(self, request, queryset, view):
+        lat = request.query_params.get('latitud')
+        long = request.query_params.get('longitud')
+        if lat and long:
+            # Convert latitudes and longitudes to radians
+            lat_aux, long_aux = map(float, [lat, long])
+            # Calculate distance between two points using Haversine formula
+            queryset = queryset.annotate(
+                lat_diff=F('latitud') - lat_aux,
+                long_diff=F('longitud') - long_aux,
+                distancia=Sqrt((F('lat_diff') ** 2) + (F('long_diff') ** 2), output_field=FloatField()),
+            ).order_by('distancia')
+        return queryset
+
+
 class EsdevenimentsView(viewsets.ModelViewSet):
     queryset = Esdeveniment.objects.all().prefetch_related('tematiques')
     serializer_class = EsdevenimentSerializer
     models = Esdeveniment
     permission_classes = []
 
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [FilterBackend, DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = {
         'codi': ['exact', 'in'],
         'nom': ['exact', 'in'],
@@ -26,8 +43,6 @@ class EsdevenimentsView(viewsets.ModelViewSet):
         'provincia': ['exact', 'in'],
         'comarca': ['exact', 'in'],
         'municipi': ['exact', 'in'],
-        'latitud': ['exact', 'range'],
-        'longitud': ['exact', 'range'],
         'espai': ['exact', 'isnull'],
         'email': ['isnull'],
         'telefon': ['isnull'],
