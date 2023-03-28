@@ -142,8 +142,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-AWS_ACCESS_KEY_ID = 'AKIARJVACBZU6JMKDTJQ'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = 'AKIARJVACBZUQAFT5W7D'
+AWS_SECRET_ACCESS_KEY = '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'
 AWS_STORAGE_BUCKET_NAME = 'storagepes'
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 AWS_S3_OBJECT_PARAMETERS = {
