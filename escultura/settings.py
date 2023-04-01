@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-+y*34v+p2$np49vnkc+t$24wrc@2@cbm15z)#zoy5@et%%+mng'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['deploy-env.eba-6a6b2amf.us-west-2.elasticbeanstalk.com', '127.0.0.1']
 
@@ -88,12 +88,12 @@ WSGI_APPLICATION = 'escultura.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'esCultura',
-        'PASSWORD': 'esculturapes',
-        'HOST': 'awseb-e-xw3n9qrvbm-stack-awsebrdsdatabase-j4w67q2ou5hm.cavbks5lfffh.us-west-2.rds.amazonaws.com',
-        'PORT': 5432,
+        'ENGINE': os.environ.get('DATABASE_ENGINE', 'django.db.backends.sqlite3'),
+        'NAME': os.environ.get('DATABASE_NAME', BASE_DIR / 'db.sqlite3'),
+        'USER': os.environ.get('DATABASE_USER', ''),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
+        'HOST': os.environ.get('DATABASE_HOST', ''),
+        'PORT': os.environ.get('DATABASE_PORT', ''),
     }
 }
 
@@ -142,8 +142,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-AWS_ACCESS_KEY_ID = 'AKIARJVACBZUQAFT5W7D'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = os.environ.get('STORAGE_KEY', '')
+AWS_SECRET_ACCESS_KEY = os.environ.get('STORAGE_PASSWORD', '')
 AWS_STORAGE_BUCKET_NAME = 'storagepes'
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 AWS_S3_OBJECT_PARAMETERS = {
