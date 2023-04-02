@@ -12,7 +12,7 @@ from .mixins import FilterBackend, PaginationClass
 
 
 class EsdevenimentsView(viewsets.ModelViewSet):
-    queryset = Esdeveniment.objects.all().prefetch_related('tematiques')
+    queryset = Esdeveniment.objects.all()
     pagination_class = PaginationClass
     serializer_class = EsdevenimentSerializer
     models = Esdeveniment
@@ -36,6 +36,7 @@ class EsdevenimentsView(viewsets.ModelViewSet):
         'email': ['isnull'],
         'telefon': ['isnull'],
         'url': ['isnull'],
+        'tematiques__nom': ['in'],
     }
     search_fields = ['nom', 'descripcio', 'provincia', 'comarca', 'municipi', 'espai']
     ordering_fields = ['codi', 'nom', 'dataIni', 'dataFi', 'provincia', 'comarca', 'municipi', 'latitud', 'lonngitud', 'espai']
