@@ -16,6 +16,7 @@ class AssistenciaAEsdevenimentView(viewsets.ModelViewSet):
     filterset_fields = ['perfil', 'esdeveniment', 'data']
     ordering_fields = ['perfil', 'esdeveniment', 'data']
 
+
     # Redefinició del mètode DELETE per tal de poder-lo realitzar a la ListView i a través de paràmetres, en aquest cas l'username i el codi de l'esdeveniment.
     # (Les ListViews només suporten les operacions GET i POST, les DELETE requests només estan permeses a les DetailViews)
     @action(methods=['delete'], detail=False)
