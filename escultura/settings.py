@@ -87,18 +87,14 @@ WSGI_APPLICATION = 'escultura.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'aws': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'esCultura',
-        'PASSWORD': 'esculturapes',
-        'HOST': 'awseb-e-xw3n9qrvbm-stack-awsebrdsdatabase-j4w67q2ou5hm.cavbks5lfffh.us-west-2.rds.amazonaws.com',
-        'PORT': 5432,
-    },
     'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+        'ENGINE': os.environ.get('DATABASE_ENGINE', 'django.db.backends.sqlite3'),
+        'NAME': os.environ.get('DATABASE_NAME', BASE_DIR / 'db.sqlite3'),
+        'USER': os.environ.get('DATABASE_USER', ''),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
+        'HOST': os.environ.get('DATABASE_HOST', ''),
+        'PORT': os.environ.get('DATABASE_PORT', ''),
+    },
 }
 
 
