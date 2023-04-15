@@ -19,7 +19,13 @@ class XatsView(viewsets.ModelViewSet):
         'participants__username': ['in'],
         'dataCreacio': ['exact', 'range'],
     }
-    ordering_fields = ['id', 'nom', 'dataCreacio']
+    ordering_fields = ['id', 'nom', 'dataCreacio', 'dataModificacio']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.annotate(dataModificacio=Max('missatges__data'))
+
+        return queryset
 
 
 class MissatgesView(viewsets.ModelViewSet):
