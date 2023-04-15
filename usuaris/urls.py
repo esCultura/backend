@@ -10,3 +10,5 @@ router.register('organitzadors', OrganitzadorView, 'Organitzadors')
 router.register('admins', AdmistradorView, 'Administradors')
 
 urlpatterns = router.urls
+
+urlpatterns += path('login/perfils', views.loginPerfils),
