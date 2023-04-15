@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'esdeveniments',
     'interessos',
     'assistencies',
+    'xats',
 ]
 
 MIDDLEWARE = [

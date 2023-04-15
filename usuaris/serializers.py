@@ -11,24 +11,24 @@ from .models import Perfil, Organitzador, Administrador
 
 
 class PerfilSerializer(serializers.ModelSerializer):
-    email = serializers.CharField(source = "user.email")
-    username = serializers.CharField(source = "user.username")
+    email = serializers.CharField(source = "user.email", read_only=True)
+    username = serializers.CharField(source = "user.username", read_only=True)
 
     class Meta:
         model = Perfil
         fields = ('user', 'email', 'username', 'imatge')
 
 class OrganitzadorSerializer(serializers.ModelSerializer):
-    email = serializers.CharField(source = "user.email")
-    username = serializers.CharField(source = "user.username")
+    email = serializers.CharField(source = "user.email", read_only=True)
+    username = serializers.CharField(source = "user.username", read_only=True)
 
     class Meta:
         model = Organitzador
         fields = ('user', 'email', 'username', 'descripcio', 'url', 'telefon')
 
 class AdministradorSerializer(serializers.ModelSerializer):
-    email = serializers.CharField(source = "user.email")
-    username = serializers.CharField(source = "user.username")
+    email = serializers.CharField(source = "user.email", read_only=True)
+    username = serializers.CharField(source = "user.username", read_only=True)
 
     class Meta:
         model = Administrador
