@@ -21,7 +21,7 @@ class PerfilSerializer(serializers.ModelSerializer):
 class OrganitzadorSerializer(serializers.ModelSerializer):
     email = serializers.CharField(source = "user.email")
     username = serializers.CharField(source = "user.username")
-    
+
     class Meta:
         model = Organitzador
         fields = ('user', 'email', 'username', 'descripcio', 'url', 'telefon')
@@ -97,6 +97,6 @@ class SignUpPerfilsSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
 
-        perfil = Perfil.objects.create(user=user)
+        Perfil.objects.create(user=user)
 
         return user
