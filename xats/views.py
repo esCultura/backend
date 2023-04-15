@@ -1,3 +1,4 @@
+from django.db.models import Max
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
@@ -18,6 +19,7 @@ class XatsView(viewsets.ModelViewSet):
         'participants__username': ['in'],
         'dataCreacio': ['exact', 'range'],
     }
+    ordering_fields = ['id', 'nom', 'dataCreacio']
 
 
 class MissatgesView(viewsets.ModelViewSet):

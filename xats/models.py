@@ -10,6 +10,13 @@ class Xat(models.Model):
     participants = models.ManyToManyField(Perfil, related_name='xats',  verbose_name=_('Participants'))
     dataCreacio = models.DateTimeField(auto_now_add=True, verbose_name=_('Data creació'))
 
+    @property
+    def ultim_missatge(self):
+        try:
+            return self.missatges.order_by('-data')[0]
+        except IndexError:
+            return None
+
 
 class Missatge(models.Model):
     id = models.AutoField(primary_key=True, verbose_name=_('Identificador'))
