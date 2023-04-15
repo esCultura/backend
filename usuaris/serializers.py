@@ -39,10 +39,11 @@ class LoginPerfilSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=255, required=True)
     password = serializers.CharField(max_length=128, write_only=True, required=True)
     token = serializers.CharField(required=False, read_only=True)
+    created = serializers.BooleanField(required=False, read_only=True)
 
     class Meta:
         model = User
-        fields = ('username', 'password', 'token')
+        fields = ('username', 'password', 'token', 'created')
 
     def validate(self, data):
         username = data.get("username", None)
@@ -52,7 +53,7 @@ class LoginPerfilSerializer(serializers.ModelSerializer):
             user = User.objects.get(username=username)
         except User.DoesNotExist:
             raise serializers.ValidationError("No existeix un usuari amb aquest username.")
-        
+
         pwd_valid = check_password(password, user.password)
 
         if not pwd_valid:
@@ -65,6 +66,7 @@ class LoginPerfilSerializer(serializers.ModelSerializer):
     def create(self, data):
         token, created = Token.objects.get_or_create(user=self.context['user'])
         data['token'] = token.key
+        data['created'] = created
         return data
 
 
