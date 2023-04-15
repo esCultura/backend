@@ -58,11 +58,11 @@ class LoginPerfilSerializer(serializers.ModelSerializer):
 
         if not pwd_valid:
             raise serializers.ValidationError("Contrasenya incorrecta.")
-        
+
         self.context['user'] = user
-        
+
         return data
-    
+
     def create(self, data):
         token, created = Token.objects.get_or_create(user=self.context['user'])
         data['token'] = token.key
@@ -95,7 +95,7 @@ class SignUpPerfilsSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
         )
 
-        
+
         user.set_password(validated_data['password'])
         user.save()
 
