@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 # Create your models here.
 
 class InteresEnEsdeveniment(models.Model):
-    perfil = models.ForeignKey('usuaris.Perfil', null=False, blank=False, on_delete=models.CASCADE, verbose_name=_('Username perfil'))
+    perfil = models.ForeignKey('usuaris.Perfil', null=False, blank=False, on_delete=models.CASCADE, verbose_name=_('Id perfil'))
     esdeveniment = models.ForeignKey('esdeveniments.Esdeveniment', null=False, blank=False, on_delete=models.CASCADE, verbose_name=_('Codi esdeveniment'))
 
     # Afegim una constraint per tal que no es pugui repetir
@@ -14,7 +14,7 @@ class InteresEnEsdeveniment(models.Model):
 
 
 class InteresEnTematica(models.Model):
-    perfil = models.ForeignKey('usuaris.Perfil', null=False, blank=False, on_delete=models.CASCADE, verbose_name=_('Username perfil'))
+    perfil = models.ForeignKey('usuaris.Perfil', null=False, blank=False, on_delete=models.CASCADE, verbose_name=_('Id perfil'))
     tematica = models.ForeignKey('esdeveniments.Tematica', null=False, blank=False, on_delete=models.CASCADE, verbose_name=_('Nom tematica'))
 
     # Afegim una constraint per tal que no es pugui repetir

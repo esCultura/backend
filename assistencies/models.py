@@ -6,7 +6,7 @@ from datetime import datetime
 # Create your models here.
 
 class AssistenciaAEsdeveniment(models.Model):
-    perfil = models.ForeignKey('usuaris.Perfil', null=False, blank=False, on_delete=models.CASCADE, verbose_name=_('Username perfil'))
+    perfil = models.ForeignKey('usuaris.Perfil', null=False, blank=False, on_delete=models.CASCADE, verbose_name=_('Id perfil'))
     esdeveniment = models.ForeignKey('esdeveniments.Esdeveniment', null=False, blank=False, on_delete=models.CASCADE, verbose_name=_('Codi esdeveniment'))
     data = models.DateTimeField(null=False, blank=False, default=datetime.now, verbose_name=_('Data assistencia'))
 

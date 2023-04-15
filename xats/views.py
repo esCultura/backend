@@ -16,7 +16,7 @@ class XatsView(viewsets.ModelViewSet):
     filterset_fields = {
         'id': ['exact', 'in'],
         'nom': ['exact', 'in'],
-        'participants__username': ['in'],
+        'participants__user__username': ['in'],
         'dataCreacio': ['exact', 'range'],
     }
     ordering_fields = ['id', 'nom', 'dataCreacio', 'dataModificacio']

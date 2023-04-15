@@ -1,8 +1,12 @@
 from rest_framework import routers
-from .views import PerfilView
+from .views import PerfilView, OrganitzadorView, AdmistradorView, SignUpPerfilsView, LoginPerfilsView
 
 router = routers.DefaultRouter()
 
-router.register('', PerfilView, 'Perfils')
+router.register('perfils', PerfilView, 'Perfils')
+router.register('organitzadors', OrganitzadorView, 'Organitzadors')
+router.register('admins', AdmistradorView, 'Administradors')
+router.register('login/perfils', LoginPerfilsView, 'Log_in_Perfils')
+router.register('sign_up/perfils', SignUpPerfilsView, 'Sign_Up_Perfils')
 
 urlpatterns = router.urls
