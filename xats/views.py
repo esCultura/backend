@@ -4,13 +4,14 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from .models import Xat, Missatge
 from .serializers import XatSerializer, MissatgeSerializer
+from usuaris import permissions
 
 
 class XatsView(viewsets.ModelViewSet):
     queryset = Xat.objects.all()
     serializer_class = XatSerializer
     model = Xat
-    permission_classes = []
+    permission_classes = [permissions.IsPerfil]
 
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = {
