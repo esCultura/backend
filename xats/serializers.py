@@ -1,10 +1,11 @@
 from rest_framework import serializers
 
 from .models import Xat, Missatge
-
+from usuaris.serializers import PerfilSerializer
 
 class XatSerializer(serializers.ModelSerializer):
     ultim_missatge = serializers.SerializerMethodField(read_only=True)
+    participants = PerfilSerializer(many=True)
 
     def get_ultim_missatge(self, xat):
         ultim_missatge = xat.ultim_missatge

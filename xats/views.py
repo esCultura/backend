@@ -1,5 +1,6 @@
 from django.db.models import Max
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters, generics, mixins, views
+from rest_framework.exceptions import PermissionDenied
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from .models import Xat, Missatge
@@ -23,10 +24,17 @@ class XatsView(viewsets.ModelViewSet):
     ordering_fields = ['id', 'nom', 'dataCreacio', 'dataModificacio']
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().prefetch_related('participants')
         queryset = queryset.annotate(dataModificacio=Max('missatges__data'))
+        # Retornem només els xats del perfil
+        queryset = queryset.filter(participants__user=self.request.user)
 
         return queryset
+
+    def check_object_permissions(self, request, obj):
+        super().check_object_permissions(request, obj)
+        if request.user.perfil not in obj.participants.all():
+            raise PermissionDenied("No tens permís per executar aquesta acció.")
 
 
 class MissatgesView(viewsets.ModelViewSet):
