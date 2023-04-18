@@ -64,6 +64,12 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
+
 ROOT_URLCONF = 'escultura.urls'
 
 TEMPLATES = [
