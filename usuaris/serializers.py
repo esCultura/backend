@@ -1,4 +1,5 @@
 from rest_framework import serializers
+import datetime
 
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
@@ -17,6 +18,13 @@ class PerfilSerializer(serializers.ModelSerializer):
     class Meta:
         model = Perfil
         fields = ('user', 'email', 'username', 'imatge')
+
+
+class PerfilExtendedSerializer(PerfilSerializer):
+    class Meta:
+        model = Perfil
+        fields = ('user', 'email', 'username', 'imatge', 'estadistiques')
+
 
 class OrganitzadorSerializer(serializers.ModelSerializer):
     email = serializers.CharField(source = "user.email", read_only=True)
