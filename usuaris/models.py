@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
@@ -6,6 +7,21 @@ from django.utils.translation import gettext_lazy as _
 class Perfil(models.Model):
     user = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE, verbose_name=_('User'))
     imatge = models.ImageField(null=True, blank=True, verbose_name=_('Imatge de perfil'))
+
+    def get_nombre_xats(self):
+        return len(self.xats.all())
+
+    @property
+    def estadistiques(self):
+        return {
+            'xats_participant': len(self.xats.all()),
+            'missatges_enviats': len(self.missatges.all()),
+            'assistencies_passades': len(self.assistencies.filter(data__lt=datetime.datetime.now())),
+            'reserves_futures': len(self.assistencies.filter(data__gt=datetime.datetime.now())),
+            'interessos_esdeveniments': len(self.interessos_esdeveniment.all()),
+            'interessos_tematiques': len(self.interessos_tematica.all())
+        }
+
 
 class Organitzador(models.Model):
     user = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE, verbose_name=_('User'))

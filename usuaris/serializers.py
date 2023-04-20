@@ -18,6 +18,13 @@ class PerfilSerializer(serializers.ModelSerializer):
         model = Perfil
         fields = ('user', 'email', 'username', 'imatge')
 
+
+class PerfilExtendedSerializer(PerfilSerializer):
+    class Meta:
+        model = Perfil
+        fields = ('user', 'email', 'username', 'imatge', 'estadistiques')
+
+
 class OrganitzadorSerializer(serializers.ModelSerializer):
     email = serializers.CharField(source = "user.email", read_only=True)
     username = serializers.CharField(source = "user.username", read_only=True)

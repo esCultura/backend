@@ -9,12 +9,17 @@ from rest_framework.response import Response
 from social_django.utils import psa
 
 from .models import Perfil, Organitzador, Administrador
-from .serializers import PerfilSerializer, OrganitzadorSerializer, AdministradorSerializer, SignUpPerfilsSerializer, LoginPerfilSerializer, ElMeuPerfilSerializer
+from .serializers import PerfilSerializer, PerfilExtendedSerializer, OrganitzadorSerializer, AdministradorSerializer, SignUpPerfilsSerializer, LoginPerfilSerializer, ElMeuPerfilSerializer
 
 
 class PerfilView(viewsets.ModelViewSet):
     queryset = Perfil.objects.all()
     serializer_class = PerfilSerializer
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return PerfilExtendedSerializer
+        return self.serializer_class
 
     @action(methods=['GET', 'PUT'], detail=False)
     def jo(self, request):
@@ -42,6 +47,7 @@ class PerfilView(viewsets.ModelViewSet):
 
         serializer = ElMeuPerfilSerializer(user.perfil)
         return Response(status=200, data={**serializer.data, **{'message': message}})
+
 
 class OrganitzadorView(viewsets.ModelViewSet):
     queryset = Organitzador.objects.all()
