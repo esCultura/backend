@@ -1,4 +1,5 @@
-from rest_framework import viewsets, filters, permissions
+import datetime
+from rest_framework import viewsets, filters
 from rest_framework.exceptions import PermissionDenied
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -68,3 +69,20 @@ class EsdevenimentsView(viewsets.ModelViewSet):
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        # Posem com a organitzador qui l'està creant (sabem que és organitzador)
+        # I posem codi a l'esdeveniment seguint el següent patró:
+        #   id de l'usuari + data d'avui + # d'esdeveniments creats per l'organitzador
+        request.POST._mutable = True
+        id = request.user.id
+        avui = datetime.datetime.now().strftime("%Y%m%d")
+        last = Esdeveniment.objects.filter(organitzador=request.user.organitzador).order_by('-codi').first()
+        max_codi = 0
+        if last:
+            max_codi = (last.codi % pow(10, len(str(last.codi)) - (len(str(request.user.id)) + 8))) + 1
+        request.POST['codi'] = int(str(id) + avui + str(max_codi))
+        request.POST['organitzador'] = id
+        response = super().create(request)
+        request.POST._mutable = True
+        return response
