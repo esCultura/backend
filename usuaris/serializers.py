@@ -109,3 +109,20 @@ class SignUpPerfilsSerializer(serializers.ModelSerializer):
         data['created'] = created
 
         return data
+
+
+class ElMeuPerfilSerializer(serializers.ModelSerializer):
+    email = serializers.CharField(source="user.email", read_only=True, required=False)
+    username = serializers.CharField(source="user.username", read_only=True, required=False)
+    password = serializers.CharField(source="user.password", required=False)
+
+    class Meta:
+        model = Perfil
+        fields = ('user', 'email', 'username', 'password', 'imatge')
+
+    def update(self, instance, validated_data):
+        user = User.objects.get(username=username)
+        user.password = validated_data['password']
+        user.perfil.image = validated_data['imatge']
+        user.save()
+        return user
