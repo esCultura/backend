@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from rest_framework.decorators import action, api_view
 
 from rest_framework.authtoken.models import Token
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from social_django.utils import psa

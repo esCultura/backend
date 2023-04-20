@@ -5,7 +5,7 @@ from rest_framework.validators import UniqueValidator
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.authtoken.models import Token
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 
 from .models import Perfil, Organitzador, Administrador
 
@@ -119,10 +119,3 @@ class ElMeuPerfilSerializer(serializers.ModelSerializer):
     class Meta:
         model = Perfil
         fields = ('user', 'email', 'username', 'password', 'imatge')
-
-    def update(self, instance, validated_data):
-        user = User.objects.get(username=username)
-        user.password = validated_data['password']
-        user.perfil.image = validated_data['imatge']
-        user.save()
-        return user
