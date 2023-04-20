@@ -78,10 +78,12 @@ class SignUpPerfilsSerializer(serializers.ModelSerializer):
 
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
+    token = serializers.CharField(required=False, read_only=True)
+    created = serializers.BooleanField(required=False, read_only=True)
 
     class Meta:
         model = User
-        fields = ('email', 'username', 'password', 'password2')
+        fields = ('email', 'username', 'password', 'password2', 'token', 'created')
 
     def validate(self, data):
         if data['password'] != data['password2']:
@@ -89,16 +91,30 @@ class SignUpPerfilsSerializer(serializers.ModelSerializer):
 
         return data
 
-    def create(self, validated_data):
+    def create(self, data):
         user = User.objects.create(
-            username=validated_data['username'],
-            email=validated_data['email'],
+            username=data['username'],
+            email=data['email'],
         )
 
 
-        user.set_password(validated_data['password'])
+        user.set_password(data['password'])
         user.save()
 
         Perfil.objects.create(user=user)
 
-        return user
+        token, created = Token.objects.get_or_create(user=user)
+        data['token'] = token.key
+        data['created'] = created
+
+        return data
+
+
+class ElMeuPerfilSerializer(serializers.ModelSerializer):
+    email = serializers.CharField(source="user.email", read_only=True, required=False)
+    username = serializers.CharField(source="user.username", read_only=True, required=False)
+    password = serializers.CharField(source="user.password", required=False)
+
+    class Meta:
+        model = Perfil
+        fields = ('user', 'email', 'username', 'password', 'imatge')
