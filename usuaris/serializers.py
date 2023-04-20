@@ -5,7 +5,6 @@ from rest_framework.validators import UniqueValidator
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.authtoken.models import Token
-from django.contrib.auth import login, logout
 
 from .models import Perfil, Organitzador, Administrador
 
