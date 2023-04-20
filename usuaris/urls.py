@@ -1,5 +1,8 @@
 from rest_framework import routers
-from .views import PerfilView, OrganitzadorView, AdmistradorView, SignUpPerfilsView, LoginPerfilsView
+
+from django.urls import re_path
+
+from .views import PerfilView, OrganitzadorView, AdmistradorView, SignUpPerfilsView, LoginPerfilsView, GoogleSignIn
 
 router = routers.DefaultRouter()
 
@@ -9,4 +12,4 @@ router.register('admins', AdmistradorView, 'Administradors')
 router.register('login/perfils', LoginPerfilsView, 'Log_in_Perfils')
 router.register('sign_up/perfils', SignUpPerfilsView, 'Sign_Up_Perfils')
 
-urlpatterns = router.urls
+urlpatterns = router.urls + [re_path('sign_in/(?P<backend>[^/]+)/$', GoogleSignIn)]
