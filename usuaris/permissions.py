@@ -11,7 +11,7 @@ class IsPerfil(IsAuthenticated):
     def has_permission(self, request, view):
         try:
             return super().has_permission(request, view) and request.user.perfil
-        except ObjectDoesNotExist:
+        except (ObjectDoesNotExist, AttributeError):
             return False
 
 
@@ -19,7 +19,7 @@ class IsOrganitzador(IsAuthenticated):
     def has_permission(self, request, view):
         try:
             return super().has_permission(request, view) and request.user.organitzador
-        except ObjectDoesNotExist:
+        except (ObjectDoesNotExist, AttributeError):
             return False
 
 
@@ -27,5 +27,17 @@ class IsAdmin(IsAuthenticated):
     def has_permission(self, request, view):
         try:
             return super().has_permission(request, view) and request.user.admin
-        except ObjectDoesNotExist:
+        except (ObjectDoesNotExist, AttributeError):
+            return False
+
+
+class IsAdminOrOrganitzadorEditPerfilRead(IsAuthenticated):
+    def has_permission(self, request, view):
+        try:
+            return super().has_permission(request, view) and (
+                getattr(request.user, 'admin', False) or
+                getattr(request.user, 'organitzador', False) or
+                (request.method in permissions.SAFE_METHODS and request.user.perfil)
+            )
+        except (ObjectDoesNotExist, AttributeError):
             return False

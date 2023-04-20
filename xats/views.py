@@ -33,6 +33,7 @@ class XatsView(viewsets.ModelViewSet):
 
     def check_object_permissions(self, request, obj):
         super().check_object_permissions(request, obj)
+        # Sabem que el user serà perfil (per permission_classes)
         if request.user.perfil not in obj.participants.all():
             raise PermissionDenied("No tens permís per executar aquesta acció.")
 
