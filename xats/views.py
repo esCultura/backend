@@ -1,5 +1,5 @@
 from django.db.models import Max
-from rest_framework import viewsets, filters, generics, mixins, views
+from rest_framework import viewsets, filters, mixins
 from rest_framework.exceptions import PermissionDenied
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
@@ -37,11 +37,11 @@ class XatsView(viewsets.ModelViewSet):
             raise PermissionDenied("No tens permís per executar aquesta acció.")
 
 
-class MissatgesView(viewsets.ModelViewSet):
+class MissatgesView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
     queryset = Missatge.objects.all()
     serializer_class = MissatgeSerializer
     model = Missatge
-    permission_classes = []
+    permission_classes = [permissions.IsPerfil]
 
     def get_queryset(self):
         # Agafem l'id del xat rebut a la URL
@@ -51,3 +51,12 @@ class MissatgesView(viewsets.ModelViewSet):
         xat = get_object_or_404(Xat, id=xat_id)
         queryset = queryset.filter(xat=xat)
         return queryset
+
+    def create(self, request, xat_id=None, *args, **kwargs):
+        # Agafem l'id del xat rebut a la URL
+        request.POST._mutable = True
+        request.POST['xat_id'] = xat_id
+        request.POST['creador_id'] = request.user.id
+        response = super().create(request)
+        request.POST._mutable = True
+        return response
