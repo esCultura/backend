@@ -1,4 +1,5 @@
 from django.db import models
+from usuaris.models import Organitzador
 from django.utils.translation import gettext_lazy as _
 
 
@@ -38,6 +39,7 @@ class Esdeveniment(models.Model):
     email = models.EmailField(max_length=100, null=True, blank=True, verbose_name=_('Email contacte'))
     telefon = models.CharField(max_length=100, null=True, blank=True, verbose_name=_('Telèfon contacte'))
     url = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('URL organitzador'))
+    organitzador = models.ForeignKey(Organitzador, on_delete=models.DO_NOTHING, null=True, blank=True, verbose_name=_('Organitzador'))
 
     def get_enllacos(self):
         return split_or_none(self.enllacos)
