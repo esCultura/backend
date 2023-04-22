@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'interessos',
     'assistencies',
     'xats',
+    'seguiments',
 ]
 
 MIDDLEWARE = [

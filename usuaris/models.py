@@ -19,7 +19,9 @@ class Perfil(models.Model):
             'assistencies_passades': len(self.assistencies.filter(data__lt=datetime.datetime.now())),
             'reserves_futures': len(self.assistencies.filter(data__gt=datetime.datetime.now())),
             'interessos_esdeveniments': len(self.interessos_esdeveniment.all()),
-            'interessos_tematiques': len(self.interessos_tematica.all())
+            'interessos_tematiques': len(self.interessos_tematica.all()),
+            'seguidors': len(self.seguidors.all()),
+            'seguits': len(self.seguits.all())
         }
 
 
