@@ -46,10 +46,11 @@ class EsdevenimentsView(viewsets.ModelViewSet):
     search_fields = ['nom', 'descripcio', 'provincia', 'comarca', 'municipi', 'espai']
     ordering_fields = ['codi', 'nom', 'dataIni', 'dataFi', 'provincia', 'comarca', 'municipi', 'latitud', 'lonngitud', 'espai']
 
-    def check_object_permissions(self, request, obj):
-        super().check_object_permissions(request, obj)
-        if not getattr(request.user, 'organitzador', False) or request.user.organitzador != obj.organitzador:
-            raise PermissionDenied("No tens permís per executar aquesta acció.")
+    def get_queryset(self):
+        if getattr(self.request.user, 'organitzador', False):
+            return Esdeveniment.objects.filter(organitzador=self.request.user.organitzador)
+        else:
+            return self.queryset
 
     @swagger_auto_schema(
         manual_parameters=[
@@ -71,18 +72,31 @@ class EsdevenimentsView(viewsets.ModelViewSet):
         return super().list(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
-        # Posem com a organitzador qui l'està creant (sabem que és organitzador)
+        # Posem com a organitzador qui l'està creant si és organitzador. Si és admin, un id petit
         # I posem codi a l'esdeveniment seguint el següent patró:
         #   id de l'usuari + data d'avui + # d'esdeveniments creats per l'organitzador
         request.POST._mutable = True
-        id = request.user.id
+        user_id = request.user.id
         avui = datetime.datetime.now().strftime("%Y%m%d")
-        last = Esdeveniment.objects.filter(organitzador=request.user.organitzador).order_by('-codi').first()
-        max_codi = 0
-        if last:
-            max_codi = (last.codi % pow(10, len(str(last.codi)) - (len(str(request.user.id)) + 8))) + 1
-        request.POST['codi'] = int(str(id) + avui + str(max_codi))
-        request.POST['organitzador'] = id
+        if getattr(request.user, 'organitzador', False):
+            last = Esdeveniment.objects.filter(organitzador=request.user.organitzador).order_by('-codi').first()
+            max_codi = 0
+            if last:
+                max_codi = (last.codi % pow(10, len(str(last.codi)) - (len(str(request.user.id)) + 8))) + 1
+            codi = int(str(user_id) + avui + str(max_codi))
+            request.POST['organitzador'] = user_id
+        else:
+            codi = Esdeveniment.objects.all().order_by('codi').first().codi - 1
+        request.POST['codi'] = codi
+        print(request.POST['codi'])
         response = super().create(request)
+        request.POST._mutable = False
+        return response
+
+    def update(self, request, *args, **kwargs):
         request.POST._mutable = True
+        user_id = request.user.id
+        request.POST['organitzador'] = user_id
+        response = super().update(request)
+        request.POST._mutable = False
         return response
