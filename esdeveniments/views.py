@@ -92,11 +92,3 @@ class EsdevenimentsView(viewsets.ModelViewSet):
         response = super().create(request)
         request.POST._mutable = False
         return response
-
-    def update(self, request, *args, **kwargs):
-        request.POST._mutable = True
-        user_id = request.user.id
-        request.POST['organitzador'] = user_id
-        response = super().update(request)
-        request.POST._mutable = False
-        return response
