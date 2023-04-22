@@ -1,6 +1,5 @@
 import datetime
 from rest_framework import viewsets, filters
-from rest_framework.exceptions import PermissionDenied
 from django_filters.rest_framework import DjangoFilterBackend
 
 from drf_yasg.utils import swagger_auto_schema
