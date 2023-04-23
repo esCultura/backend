@@ -1,10 +1,13 @@
 from rest_framework import viewsets
 
 from django.contrib.auth.models import User
-from rest_framework.decorators import action, api_view
+from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.permissions import AllowAny
 
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
+
+from requests.exceptions import HTTPError
 
 from social_django.utils import psa
 
@@ -67,18 +70,26 @@ class SignUpPerfilsView(viewsets.ModelViewSet):
     serializer_class = SignUpPerfilsSerializer
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 @psa()
 def GoogleSignIn(request, backend):
     token = request.POST.get('access_token', None)
     if token is None:
         return Response(status=400, data={'error': 'No access_token was provided, you can provide it through an access_token parameter in the body of the request.'})
-    user = request.backend.do_auth(token)
+    try:
+        user = request.backend.do_auth(token)
+    except HTTPError as e:
+        return Response(status=400, data={'errors': {'token': 'Invalid token', 'detail': str(e)}})
+
+
     if user:
-        token, created = Token.objects.get_or_create(user=user)
-        Perfil.objects.create(user=user)
-        serializer = ElMeuPerfilSerializer(user.perfil)
-        serializer.data['token'] = token
-        serializer.data['created'] = created
-        return Response(status=200, data=serializer.data)
+        if user.is_active:
+            token, created = Token.objects.get_or_create(user=user)
+            if user.perfil is None:
+                Perfil.objects.create(user=user)
+            serializer = ElMeuPerfilSerializer(user.perfil)
+            return Response(status=200, data={**serializer.data, 'token': token.key, 'created': created})
+        return Response(status=400, data={'errors': 'User deleted their account or was banned by an administrator.'})
+
     else:
         return Response(status=400, data={'errors': {'token': 'Invalid token'}})
