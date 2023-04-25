@@ -1,2 +1,8 @@
+from django.test import TestCase
+from .qr import genera_image_data_qr
 
-# Create your tests here.
+
+class TestQR(TestCase):
+    def test_genera_image_data_qr(self):
+        data = genera_image_data_qr("hola")
+        self.assertEqual(data, "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASIAAAEiAQAAAAB1xeIbAAABbklEQVR4nO2aPW6EMBCFv4mRtjQ3yFHM1XIzOEpuACUS6KWw2Wy2SRrwBmYKF+aT/OSfp5kRJn6P4e0PEDjllFNOOfXqlJVoYLAG66Ztpquq6xJUkiSNQBoBCJIk/aSO13UJaip33KwF9UB+BrV1XYuKy9ErOrXFdHf5o1a8KrXZShQwAcQRA3gsul5V/SmowczMWiB9NgBrTnNq6zo1le/94x2Ps5VnUFPXdagtoW9QT1A2fc9zjqGGNoikZcss44L6uGBdXV2npsg1VB8l9QBJC+qjlA8gf31V9f+byrZi6dMgaW2AINK4NjDdvK7dn1JPkD7slq3+wYK6qrrOTRVXucdW14bsQ7nR456zC8Vjy4ygnOekEaQR9/s9qbL3pY8Znk/B9/4A6ruLk51mtjzU1nUpqvQUwPOcvanmeWJ4n01DO8og1NN1BerZ78ugBdLofn8Ede9jWhfnkt/D6n6/J2X+b5RTTjnl1CWoLykY05Y5T47ZAAAAAElFTkSuQmCC")

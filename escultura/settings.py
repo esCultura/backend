@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
+import sys
 from pathlib import Path
 from django.utils.translation import gettext_lazy as _
 
@@ -111,6 +112,14 @@ DATABASES = {
         'PORT': os.environ.get('DATABASE_PORT', ''),
     },
 }
+
+if 'test' in sys.argv:
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'dbTest.sqlite3'
+    }
+
+FRONTEND_URL = 'url_frontend'
 
 
 # Password validation
