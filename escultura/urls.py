@@ -39,5 +39,6 @@ urlpatterns = [
     path('esdeveniments/', include('esdeveniments.urls'), name='Esdeveniments'),
     path('interessos/', include('interessos.urls'), name='Interessos'),
     path('assistencies/', include('assistencies.urls'), name='Assistencies'),
-    path('xats/', include('xats.urls'), name='Assistencies')
+    path('xats/', include('xats.urls'), name='Assistencies'),
+    path('seguiments/', include('seguiments.urls'), name='Seguiments')
 ]
