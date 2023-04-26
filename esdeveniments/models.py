@@ -49,7 +49,8 @@ class Esdeveniment(models.Model):
         if imatges:
             imatges_url = []
             for imatge in imatges:
-                if imatge.split('://')[0] != ('http' or 'https'):
+                ini = imatge.split('://')
+                if ini != 'http' and ini != 'https':
                     imatges_url.append('http://agenda.cultura.gencat.cat' + imatge)
                 else:
                     imatges_url.append(imatge)
