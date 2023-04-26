@@ -45,7 +45,16 @@ class Esdeveniment(models.Model):
         return split_or_none(self.enllacos)
 
     def get_imatges(self):
-        return split_or_none(self.imatges)
+        imatges = split_or_none(self.imatges)
+        if imatges:
+            imatges_url = []
+            for imatge in imatges:
+                if imatge.split('://')[0] != ('http' or 'https'):
+                    imatges_url.append('http://agenda.cultura.gencat.cat' + imatge)
+                else:
+                    imatges_url.append(imatge)
+            return imatges_url
+        return imatges
 
     def get_url(self):
         return split_or_none(self.url)
