@@ -46,7 +46,7 @@ class IsAdminOrOrganitzadorEditPerfilRead(IsAuthenticated):
 class IsAdminOrOrganitzadorEditOthersRead(IsAuthenticated):
     def has_permission(self, request, view):
         try:
-            return super().has_permission(request, view) and (
+            return (
                 request.method in permissions.SAFE_METHODS or
                 getattr(request.user, 'administrador', False) or
                 getattr(request.user, 'organitzador', False)
