@@ -5,6 +5,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
+from django.db.models import Count
 from django.utils.translation import gettext_lazy as _
 
 from usuaris.permissions import IsAdminOrOrganitzadorEditPerfilRead
@@ -43,13 +44,16 @@ class EsdevenimentsView(viewsets.ModelViewSet):
         'organitzador__user__first_name': ['exact', 'in', 'contains']
     }
     search_fields = ['nom', 'descripcio', 'provincia', 'comarca', 'municipi', 'espai']
-    ordering_fields = ['codi', 'nom', 'dataIni', 'dataFi', 'provincia', 'comarca', 'municipi', 'latitud', 'lonngitud', 'espai']
+    ordering_fields = ['codi', 'nom', 'dataIni', 'dataFi', 'provincia', 'comarca', 'municipi', 'latitud', 'longitud',
+                       'espai', 'assistents', 'interessats']
 
     def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.annotate(assistents=Count('assistencies'))
         if getattr(self.request.user, 'organitzador', False):
-            return Esdeveniment.objects.filter(organitzador=self.request.user.organitzador)
+            return queryset.filter(organitzador=self.request.user.organitzador)
         else:
-            return self.queryset
+            return queryset
 
     @swagger_auto_schema(
         manual_parameters=[
