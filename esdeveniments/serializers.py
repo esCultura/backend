@@ -27,7 +27,7 @@ class EsdevenimentSerializer(serializers.ModelSerializer):
         required=False
     )
 
-    # Per petició de l'equip de mobilitat, afegim camps punts i descompte
+    # Per petició de l'equip de mobilitat (serveis externs), afegim camps punts i descompte
     # Valor random entre 20 i 250, sempre el mateix
     punts = serializers.SerializerMethodField(read_only=True)
 
