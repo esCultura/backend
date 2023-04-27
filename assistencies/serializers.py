@@ -22,7 +22,7 @@ class EntradaSerializer(serializers.ModelSerializer):
         return genera_image_data_qr(settings.FRONTEND_URL + '/checkin/' + str(assistencia.uuid))
 
     def get_foto(self, assistencia):
-        return assistencia.esdeveniment.imatges.split(',')[0]
+        return assistencia.esdeveniment.get_imatges()[0]
 
     def get_esdeveniment(self, assistencia):
         return assistencia.esdeveniment.nom

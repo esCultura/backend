@@ -1,4 +1,5 @@
 from rest_framework import serializers
+import random
 
 from .models import Esdeveniment, Tematica
 
@@ -25,6 +26,27 @@ class EsdevenimentSerializer(serializers.ModelSerializer):
         write_only=True,
         required=False
     )
+
+    # Per petició de l'equip de mobilitat, afegim camps punts i descompte
+    # Valor random entre 20 i 250, sempre el mateix
+    punts = serializers.SerializerMethodField(read_only=True)
+
+    # Valor random dins el conjunt {10, 15, 20, 25, 50}, sempre el mateix
+    descompte = serializers.SerializerMethodField(read_only=True)
+
+    def get_punts(self, esdeveniment):
+        # Fem set de la seed per obtenir sempre el mateix random donat aquell esdeveniment
+        random.seed(esdeveniment.codi)
+
+        # Generem random entre 20 i 250
+        return random.randint(20, 250)
+
+    def get_descompte(self, esdeveniment):
+        # Fem set de la seed per obtenir sempre el mateix random donat aquell esdeveniment
+        random.seed(esdeveniment.codi)
+
+        # Generem random dins el conjunt {10, 15, 20, 25, 50}
+        return random.choice([10, 15, 20, 25, 50])
 
     class Meta:
         model = Esdeveniment
