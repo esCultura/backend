@@ -45,11 +45,12 @@ class EsdevenimentsView(viewsets.ModelViewSet):
     }
     search_fields = ['nom', 'descripcio', 'provincia', 'comarca', 'municipi', 'espai']
     ordering_fields = ['codi', 'nom', 'dataIni', 'dataFi', 'provincia', 'comarca', 'municipi', 'latitud', 'longitud',
-                       'espai', 'assistents', 'interessats']
+                       'espai', 'assistents', 'likes']
 
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = queryset.annotate(assistents=Count('assistencies'))
+        queryset = queryset.annotate(likes=Count('interessats'))
         if getattr(self.request.user, 'organitzador', False):
             return queryset.filter(organitzador=self.request.user.organitzador)
         else:
