@@ -7,7 +7,7 @@ from drf_yasg import openapi
 
 from django.utils.translation import gettext_lazy as _
 
-from usuaris.permissions import IsAdminOrOrganitzadorEditPerfilRead
+from usuaris.permissions import IsAdminOrOrganitzadorEditOthersRead
 
 from .models import Esdeveniment
 from .serializers import EsdevenimentSerializer
@@ -19,7 +19,7 @@ class EsdevenimentsView(viewsets.ModelViewSet):
     pagination_class = PaginationClass
     serializer_class = EsdevenimentSerializer
     models = Esdeveniment
-    permission_classes = [IsAdminOrOrganitzadorEditPerfilRead]
+    permission_classes = [IsAdminOrOrganitzadorEditOthersRead]
 
     filter_backends = [FilterBackend, DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = {

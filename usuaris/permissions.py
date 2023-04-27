@@ -41,3 +41,15 @@ class IsAdminOrOrganitzadorEditPerfilRead(IsAuthenticated):
             )
         except (ObjectDoesNotExist, AttributeError):
             return False
+
+
+class IsAdminOrOrganitzadorEditOthersRead(IsAuthenticated):
+    def has_permission(self, request, view):
+        try:
+            return (
+                request.method in permissions.SAFE_METHODS or
+                getattr(request.user, 'administrador', False) or
+                getattr(request.user, 'organitzador', False)
+            )
+        except (ObjectDoesNotExist, AttributeError):
+            return False
