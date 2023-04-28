@@ -75,7 +75,7 @@ class LoginPerfilSerializer(serializers.ModelSerializer):
     def validate(self, data):
         user = validacioLogin(data)
         try:
-            perfil = user.perfil
+            _ = user.perfil
         except:
             raise serializers.ValidationError("No existeix un perfil amb aquest username.")
         self.context['user'] = user
@@ -98,7 +98,7 @@ class LoginOrganitzadorSerializer(serializers.ModelSerializer):
     def validate(self, data):
         user = validacioLogin(data)
         try:
-            organitzador = user.organitzador
+            _ = user.organitzador
         except:
             raise serializers.ValidationError("No existeix un organitzador amb aquest username.")
         self.context['user'] = user
@@ -121,7 +121,7 @@ class LoginAdminSerializer(serializers.ModelSerializer):
     def validate(self, data):
         user = validacioLogin(data)
         try:
-            admin = user.administrador
+            _ = user.administrador
         except:
             raise serializers.ValidationError("No existeix un administrador amb aquest username.")
         self.context['user'] = user
