@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 class InteresEnEsdeveniment(models.Model):
     perfil = models.ForeignKey('usuaris.Perfil', related_name='interessos_esdeveniment', null=False, blank=False, on_delete=models.CASCADE, verbose_name=_('Id perfil'))
-    esdeveniment = models.ForeignKey('esdeveniments.Esdeveniment', null=False, blank=False, on_delete=models.CASCADE, verbose_name=_('Codi esdeveniment'))
+    esdeveniment = models.ForeignKey('esdeveniments.Esdeveniment', related_name='interessats', null=False, blank=False, on_delete=models.CASCADE, verbose_name=_('Codi esdeveniment'))
 
     # Afegim una constraint per tal que no es pugui repetir
     # la combinació d'un perfil i un esdeveniment determinats.
