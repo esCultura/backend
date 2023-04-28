@@ -3,12 +3,12 @@ from django.core.exceptions import ObjectDoesNotExist
 
 
 class IsAuthenticated(permissions.IsAuthenticated):
-    def has_permission(self, request, view):
+    def has_permission(self, request, view=None):
         return super().has_permission(request, view) and request.user.is_active
 
 
 class IsPerfil(IsAuthenticated):
-    def has_permission(self, request, view):
+    def has_permission(self, request, view=None):
         try:
             return super().has_permission(request, view) and request.user.perfil
         except (ObjectDoesNotExist, AttributeError):
@@ -16,7 +16,7 @@ class IsPerfil(IsAuthenticated):
 
 
 class IsOrganitzador(IsAuthenticated):
-    def has_permission(self, request, view):
+    def has_permission(self, request, view=None):
         try:
             return super().has_permission(request, view) and request.user.organitzador
         except (ObjectDoesNotExist, AttributeError):
@@ -24,7 +24,7 @@ class IsOrganitzador(IsAuthenticated):
 
 
 class IsAdmin(IsAuthenticated):
-    def has_permission(self, request, view):
+    def has_permission(self, request, view=None):
         try:
             return super().has_permission(request, view) and request.user.administrador
         except (ObjectDoesNotExist, AttributeError):
@@ -32,7 +32,7 @@ class IsAdmin(IsAuthenticated):
 
 
 class IsAdminOrOrganitzadorEditPerfilRead(IsAuthenticated):
-    def has_permission(self, request, view):
+    def has_permission(self, request, view=None):
         try:
             return super().has_permission(request, view) and (
                 getattr(request.user, 'administrador', False) or
@@ -44,7 +44,7 @@ class IsAdminOrOrganitzadorEditPerfilRead(IsAuthenticated):
 
 
 class IsAdminOrOrganitzadorEditOthersRead(IsAuthenticated):
-    def has_permission(self, request, view):
+    def has_permission(self, request, view=None):
         try:
             return (
                 request.method in permissions.SAFE_METHODS or

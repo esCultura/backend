@@ -1,5 +1,6 @@
 import datetime
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters, status
+from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 
 from drf_yasg.utils import swagger_auto_schema
@@ -79,7 +80,7 @@ class EsdevenimentsView(viewsets.ModelViewSet):
         # Posem com a organitzador qui l'està creant si és organitzador. Si és admin, un id petit
         # I posem codi a l'esdeveniment seguint el següent patró:
         #   id de l'usuari + data d'avui + # d'esdeveniments creats per l'organitzador
-        request.POST._mutable = True
+        data = request.data.copy()
         user_id = request.user.id
         avui = datetime.datetime.now().strftime("%Y%m%d")
         if getattr(request.user, 'organitzador', False):
@@ -88,11 +89,12 @@ class EsdevenimentsView(viewsets.ModelViewSet):
             if last:
                 max_codi = (last.codi % pow(10, len(str(last.codi)) - (len(str(request.user.id)) + 8))) + 1
             codi = int(str(user_id) + avui + str(max_codi))
-            request.POST['organitzador'] = user_id
+            data['organitzador'] = user_id
         else:
             codi = Esdeveniment.objects.all().order_by('codi').first().codi - 1
-        request.POST['codi'] = codi
-        print(request.POST['codi'])
-        response = super().create(request)
-        request.POST._mutable = False
-        return response
+        data['codi'] = codi
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

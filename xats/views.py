@@ -1,6 +1,7 @@
 from django.db.models import Max
-from rest_framework import viewsets, filters, mixins
+from rest_framework import viewsets, filters, mixins, status
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from .models import Xat, Missatge
@@ -54,10 +55,12 @@ class MissatgesView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.Cre
         return queryset
 
     def create(self, request, xat_id=None, *args, **kwargs):
+        data = request.data.copy()
         # Agafem l'id del xat rebut a la URL
-        request.POST._mutable = True
-        request.POST['xat_id'] = xat_id
-        request.POST['creador_id'] = request.user.id
-        response = super().create(request)
-        request.POST._mutable = True
-        return response
+        data['xat_id'] = xat_id
+        data['creador_id'] = request.user.id
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
