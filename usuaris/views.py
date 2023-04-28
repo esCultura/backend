@@ -12,7 +12,7 @@ from requests.exceptions import HTTPError
 from social_django.utils import psa
 
 from .models import Perfil, Organitzador, Administrador
-from .serializers import PerfilSerializer, PerfilExtendedSerializer, OrganitzadorSerializer, AdministradorSerializer, SignUpPerfilsSerializer, LoginPerfilSerializer, ElMeuPerfilSerializer
+from .serializers import PerfilSerializer, PerfilExtendedSerializer, OrganitzadorSerializer, AdministradorSerializer, SignUpPerfilsSerializer, SignUpOrganitzadorsSerializer, SignUpAdminSerializer, LoginPerfilSerializer, LoginOrganitzadorSerializer, LoginAdminSerializer, ElMeuPerfilSerializer
 
 
 class PerfilView(viewsets.ModelViewSet):
@@ -65,9 +65,25 @@ class LoginPerfilsView(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = LoginPerfilSerializer
 
+class LoginOrganitzadorsView(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = LoginOrganitzadorSerializer
+
+class LoginAdminView(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = LoginAdminSerializer
+
 class SignUpPerfilsView(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = SignUpPerfilsSerializer
+
+class SignUpOrganitzadorsView(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = SignUpOrganitzadorsSerializer
+
+class SignUpAdminsView(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = SignUpAdminSerializer
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
