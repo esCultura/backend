@@ -60,7 +60,7 @@ class TestEsdevenimentsViewGet(TestCase):
 
         # Preparem i executem un GET d'un esdeveniment sent l'organitzador
         request = APIRequestFactory().get(url)
-        force_authenticate(request, self.organitzador)
+        force_authenticate(request, self.userOrganitzador)
         view = resolve(url).func
         response = view(request, pk=1)
 
