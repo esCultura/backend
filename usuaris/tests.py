@@ -1,5 +1,5 @@
 from django.test import TestCase
-from rest_framework.test import force_authenticate, APIRequestFactory
+from rest_framework.test import APIRequestFactory
 
 from django.contrib.auth.models import User
 from .models import Perfil, Organitzador, Administrador
@@ -45,7 +45,7 @@ class TestPermissions(TestCase):
         self.assertTrue(permission.has_permission(request))
 
     # Si no hi ha usuari no està autenticat
-    def test_authenticated_true(self):
+    def test_authenticated_false(self):
         request = APIRequestFactory().get('')
         request.user = None
         permission = permissions.IsAuthenticated()
