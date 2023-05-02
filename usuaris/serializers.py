@@ -18,7 +18,7 @@ class PerfilSerializer(serializers.ModelSerializer):
     class Meta:
         model = Perfil
         fields = ('user', 'email', 'username', 'password', 'imatge', 'bio', 'estadistiques')
-    
+
 
 class OrganitzadorSerializer(serializers.ModelSerializer):
     email = serializers.CharField(source = "user.email", read_only=True)
@@ -178,7 +178,7 @@ class SignUpPerfilsSerializer(PerfilSerializer):
             validators=[UniqueValidator(queryset=User.objects.all())]
             )
     username = serializers.CharField(source = "user.username", max_length=255, required=True)
-    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])  
+    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
     imatge = serializers.ImageField(required=False, read_only=True)
     bio = serializers.CharField(required=False, read_only=True)

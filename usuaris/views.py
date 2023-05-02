@@ -32,8 +32,8 @@ class PerfilView(viewsets.ModelViewSet):
             newPassword = request.POST.get('password', None)
             newImage = request.POST.get('imatge', None)
             newBio = request.POST.get('bio', None)
-            
-            elementsModificats = []        
+
+            elementsModificats = []
             if newPassword is not None:
                 user.set_password(newPassword)
                 elementsModificats.append("password")
