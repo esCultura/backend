@@ -12,17 +12,12 @@ from requests.exceptions import HTTPError
 from social_django.utils import psa
 
 from .models import Perfil, Organitzador, Administrador
-from .serializers import PerfilSerializer, PerfilExtendedSerializer, OrganitzadorSerializer, AdministradorSerializer, SignUpPerfilsSerializer, SignUpOrganitzadorsSerializer, SignUpAdminSerializer, LoginPerfilSerializer, LoginOrganitzadorSerializer, LoginAdminSerializer, ElMeuPerfilSerializer
+from .serializers import PerfilSerializer, OrganitzadorSerializer, AdministradorSerializer, SignUpPerfilsSerializer, SignUpOrganitzadorsSerializer, SignUpAdminSerializer, LoginPerfilSerializer, LoginOrganitzadorSerializer, LoginAdminSerializer
 
 
 class PerfilView(viewsets.ModelViewSet):
     queryset = Perfil.objects.all()
     serializer_class = PerfilSerializer
-
-    def get_serializer_class(self):
-        if self.action == "retrieve":
-            return PerfilExtendedSerializer
-        return self.serializer_class
 
     @action(methods=['GET', 'PUT'], detail=False)
     def jo(self, request):
@@ -48,7 +43,7 @@ class PerfilView(viewsets.ModelViewSet):
             user.save()
             user.perfil.save()
 
-        serializer = ElMeuPerfilSerializer(user.perfil)
+        serializer = PerfilSerializer(user.perfil)
         return Response(status=200, data={**serializer.data, **{'message': message}})
 
 
@@ -62,7 +57,7 @@ class AdmistradorView(viewsets.ModelViewSet):
 
 
 class LoginPerfilsView(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+    queryset = Perfil.objects.all()
     serializer_class = LoginPerfilSerializer
 
 class LoginOrganitzadorsView(viewsets.ModelViewSet):
@@ -74,7 +69,7 @@ class LoginAdminView(viewsets.ModelViewSet):
     serializer_class = LoginAdminSerializer
 
 class SignUpPerfilsView(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+    queryset = Perfil.objects.all()
     serializer_class = SignUpPerfilsSerializer
 
 class SignUpOrganitzadorsView(viewsets.ModelViewSet):
@@ -103,7 +98,7 @@ def GoogleSignIn(request, backend):
             token, created = Token.objects.get_or_create(user=user)
             if user.perfil is None:
                 Perfil.objects.create(user=user)
-            serializer = ElMeuPerfilSerializer(user.perfil)
+            serializer = PerfilSerializer(user.perfil)
             return Response(status=200, data={**serializer.data, 'token': token.key, 'created': created})
         return Response(status=400, data={'errors': 'User deleted their account or was banned by an administrator.'})
 
