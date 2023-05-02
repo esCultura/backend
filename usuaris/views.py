@@ -26,20 +26,26 @@ class PerfilView(viewsets.ModelViewSet):
             return Response(status=400, data={'error': 'No authentication token was provided.'})
 
         user = Token.objects.get(key=self.request.auth.key).user
-        message = 'Els atributs que es poden modificar són: [password, imatge]'
+        message = 'Els atributs que es poden modificar són: [password, imatge, bio]'
 
         if request.method == 'PUT':
             newPassword = request.POST.get('password', None)
             newImage = request.POST.get('imatge', None)
-            message = 'S\'ha actualitzat els atributs:'
-            if newPassword is None and newImage is None:
-                message = 'No s\'ha actualitzat cap atribut del perfil.'
+            newBio = request.POST.get('bio', None)
+            
+            elementsModificats = []        
             if newPassword is not None:
                 user.set_password(newPassword)
-                message += ' password'
+                elementsModificats.append("password")
             if newImage is not None:
                 user.perfil.image = newImage
-                message += ' ,imatge'
+                elementsModificats.append("imatge")
+            if newBio is not None:
+                user.perfil.bio = newBio
+                elementsModificats.append("bio")
+            message = 'S\'ha actualitzat els atributs: [' + ", ".join(elementsModificats) + "]"
+            if not elementsModificats:
+                message = 'No s\'ha actualitzat cap atribut del perfil.'
             user.save()
             user.perfil.save()
 

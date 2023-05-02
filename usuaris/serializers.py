@@ -17,7 +17,7 @@ class PerfilSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Perfil
-        fields = ('user', 'email', 'username', 'password', 'imatge', 'estadistiques')
+        fields = ('user', 'email', 'username', 'password', 'imatge', 'bio', 'estadistiques')
     
 
 class OrganitzadorSerializer(serializers.ModelSerializer):
@@ -67,12 +67,13 @@ class LoginPerfilSerializer(PerfilSerializer):
     username = serializers.CharField(source = "user.username", max_length=255, required=True)
     password = serializers.CharField(max_length=128, write_only=True, required=True)
     imatge = serializers.ImageField(required=False, read_only=True)
+    bio = serializers.CharField(required=False, read_only=True)
     token = serializers.CharField(required=False, read_only=True)
     created = serializers.BooleanField(required=False, read_only=True)
 
     class Meta:
         model = Perfil
-        fields = ('user', 'email', 'username', 'imatge', 'estadistiques', 'password', 'token', 'created')
+        fields = ('user', 'email', 'username', 'imatge', 'bio', 'estadistiques', 'password', 'token', 'created')
 
     def validate(self, data):
         user = validacioLogin(data)
@@ -90,6 +91,7 @@ class LoginPerfilSerializer(PerfilSerializer):
         data['user'] = user
         data['email'] = user.email
         data['imatge'] = user.perfil.imatge
+        data['bio'] = user.perfil.bio
         data['estadistiques'] = user.perfil.estadistiques
         return data
 
@@ -179,12 +181,13 @@ class SignUpPerfilsSerializer(PerfilSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])  
     password2 = serializers.CharField(write_only=True, required=True)
     imatge = serializers.ImageField(required=False, read_only=True)
+    bio = serializers.CharField(required=False, read_only=True)
     token = serializers.CharField(required=False, read_only=True)
     created = serializers.BooleanField(required=False, read_only=True)
 
     class Meta:
         model = Perfil
-        fields = ('user', 'email', 'username', 'password', 'password2', 'imatge', 'estadistiques', 'token', 'created')
+        fields = ('user', 'email', 'username', 'password', 'password2', 'imatge', 'bio', 'estadistiques', 'token', 'created')
 
     def validate(self, data):
         return validacioSignUp(data)
@@ -194,6 +197,7 @@ class SignUpPerfilsSerializer(PerfilSerializer):
         Perfil.objects.create(user=user)
         data['user'] = user
         data['imatge'] = user.perfil.imatge
+        data['bio'] = user.perfil.bio
         data['estadistiques'] = user.perfil.estadistiques
         return data
 
