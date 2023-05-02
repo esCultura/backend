@@ -24,7 +24,7 @@ class XatSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Xat
-        fields = ('id', 'participants', 'ultim_missatge', 'participant_id')
+        fields = ('id', 'nom', 'participants', 'ultim_missatge', 'participant_id')
 
 
 class MissatgeSerializer(serializers.ModelSerializer):
