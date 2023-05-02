@@ -13,12 +13,17 @@ from .models import Perfil, Organitzador, Administrador
 class PerfilSerializer(serializers.ModelSerializer):
     email = serializers.CharField(source = "user.email", read_only=True)
     username = serializers.CharField(source = "user.username", read_only=True)
-    password = serializers.CharField(source="user.password", required=False, write_only=True)
 
     class Meta:
         model = Perfil
-        fields = ('user', 'email', 'username', 'password', 'imatge', 'bio', 'estadistiques')
-    
+        fields = ('user', 'email', 'username', 'imatge')
+
+
+class PerfilExtendedSerializer(PerfilSerializer):
+    class Meta:
+        model = Perfil
+        fields = ('user', 'email', 'username', 'imatge', 'estadistiques')
+
 
 class OrganitzadorSerializer(serializers.ModelSerializer):
     email = serializers.CharField(source = "user.email", read_only=True)
@@ -37,11 +42,7 @@ class AdministradorSerializer(serializers.ModelSerializer):
         fields = ('user', 'email', 'username')
 
 def validacioLogin(data):
-    username = data.get("user", None)
-    if username is not None:
-        username = username['username']
-    else:
-        username = data.get("username", None)
+    username = data.get("username", None)
     password = data.get("password", None)
 
     try:
@@ -61,19 +62,15 @@ def creacioLogin(data, user):
     data['created'] = created
     return data
 
-class LoginPerfilSerializer(PerfilSerializer):
-    user = serializers.IntegerField(source="user.id", read_only=True)
-    email = serializers.CharField(source="user.email", read_only=True)
-    username = serializers.CharField(source = "user.username", max_length=255, required=True)
+class LoginPerfilSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(max_length=255, required=True)
     password = serializers.CharField(max_length=128, write_only=True, required=True)
-    imatge = serializers.ImageField(required=False, read_only=True)
-    bio = serializers.CharField(required=False, read_only=True)
     token = serializers.CharField(required=False, read_only=True)
     created = serializers.BooleanField(required=False, read_only=True)
 
     class Meta:
-        model = Perfil
-        fields = ('user', 'email', 'username', 'imatge', 'bio', 'estadistiques', 'password', 'token', 'created')
+        model = User
+        fields = ('username', 'password', 'token', 'created')
 
     def validate(self, data):
         user = validacioLogin(data)
@@ -86,14 +83,7 @@ class LoginPerfilSerializer(PerfilSerializer):
         return data
 
     def create(self, data):
-        user = self.context['user']
-        data = creacioLogin(data, user)
-        data['user'] = user
-        data['email'] = user.email
-        data['imatge'] = user.perfil.imatge
-        data['bio'] = user.perfil.bio
-        data['estadistiques'] = user.perfil.estadistiques
-        return data
+        return creacioLogin(data, self.context['user'])
 
 class LoginOrganitzadorSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=255, required=True)
@@ -147,17 +137,9 @@ def validacioSignUp(data):
     return data
 
 def creacioUsuari(data):
-    print(data)
-    user = data.get("user", None)
-    if user is not None:
-        username = user['username']
-        email = user['email']
-    else:
-        username = data['username']
-        email = data['email']
     user = User.objects.create(
-            username=username,
-            email=email,
+            username=data['username'],
+            email=data['email'],
         )
 
 
@@ -170,24 +152,20 @@ def creacioUsuari(data):
 
     return user, data
 
-class SignUpPerfilsSerializer(PerfilSerializer):
-    user = serializers.IntegerField(source="user.id", read_only=True)
+class SignUpPerfilsSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
-            source="user.email",
             required=True,
             validators=[UniqueValidator(queryset=User.objects.all())]
             )
-    username = serializers.CharField(source = "user.username", max_length=255, required=True)
-    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])  
+
+    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
-    imatge = serializers.ImageField(required=False, read_only=True)
-    bio = serializers.CharField(required=False, read_only=True)
     token = serializers.CharField(required=False, read_only=True)
     created = serializers.BooleanField(required=False, read_only=True)
 
     class Meta:
-        model = Perfil
-        fields = ('user', 'email', 'username', 'password', 'password2', 'imatge', 'bio', 'estadistiques', 'token', 'created')
+        model = User
+        fields = ('email', 'username', 'password', 'password2', 'token', 'created')
 
     def validate(self, data):
         return validacioSignUp(data)
@@ -195,10 +173,6 @@ class SignUpPerfilsSerializer(PerfilSerializer):
     def create(self, data):
         user, data = creacioUsuari(data)
         Perfil.objects.create(user=user)
-        data['user'] = user
-        data['imatge'] = user.perfil.imatge
-        data['bio'] = user.perfil.bio
-        data['estadistiques'] = user.perfil.estadistiques
         return data
 
 class SignUpOrganitzadorsSerializer(serializers.ModelSerializer):
@@ -246,3 +220,13 @@ class SignUpAdminSerializer(serializers.ModelSerializer):
         user, data = creacioUsuari(data)
         Administrador.objects.create(user=user)
         return data
+
+
+class ElMeuPerfilSerializer(serializers.ModelSerializer):
+    email = serializers.CharField(source="user.email", read_only=True, required=False)
+    username = serializers.CharField(source="user.username", read_only=True, required=False)
+    password = serializers.CharField(source="user.password", required=False)
+
+    class Meta:
+        model = Perfil
+        fields = ('user', 'email', 'username', 'password', 'imatge')

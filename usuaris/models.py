@@ -7,7 +7,6 @@ from django.utils.translation import gettext_lazy as _
 class Perfil(models.Model):
     user = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE, verbose_name=_('User'))
     imatge = models.ImageField(null=True, blank=True, verbose_name=_('Imatge de perfil'))
-    bio = models.CharField(max_length=200, default="", null=True, blank=True, verbose_name=_('Bio'))
 
     def get_nombre_xats(self):
         return len(self.xats.all())
