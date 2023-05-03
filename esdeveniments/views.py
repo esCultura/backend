@@ -15,6 +15,7 @@ from .models import Esdeveniment
 from .serializers import EsdevenimentSerializer
 from .mixins import FilterBackend, PaginationClass
 
+from rest_framework.decorators import action
 
 class EsdevenimentsView(viewsets.ModelViewSet):
     queryset = Esdeveniment.objects.all()
@@ -98,3 +99,20 @@ class EsdevenimentsView(viewsets.ModelViewSet):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    @action(methods=['GET'], detail=True)
+    def report(self, request, pk):
+        if self.request.auth is None:
+            return Response(status=400, data={'error': 'No authentication token was provided.'})
+        user = Token.objects.get(key=self.request.auth.key).user
+        esdeveniment = self.get_object(pk)
+        reports = esdeveniment.get_reports()
+        if user.username in reports:
+            return Response(status=400, data={'error': 'Ja has reportat aquest esdeveniment anteriorment.'})
+        if len(reports) == 4:
+            esdeveniment.delete()
+            return Response(status=200, data={'message': 'Has reportat correctament l\'esdeveniment. L\'esdeveniment ha estat reportat tantes vegades que s\'ha eliminat.'})
+        else:
+            esdeveniment.reports = ",".join(reports) + "," + user.username
+            esdeveniment.save()
+            return Response(status=200, data={'message': 'Has reportat correctament l\'esdeveniment.'})
