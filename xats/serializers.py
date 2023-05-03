@@ -1,3 +1,4 @@
+from datetime import date
 from rest_framework import serializers
 from usuaris.serializers import PerfilSerializer
 from usuaris.models import Perfil
@@ -39,6 +40,17 @@ class MissatgeSerializer(serializers.ModelSerializer):
         source='xat',
         write_only=True
     )
+    data = serializers.SerializerMethodField(read_only=True)
+
+    def get_data(self, missatge):
+        avui = date.today()
+        data = missatge.data
+        if data.date() < avui:
+            # Si la data és anterior a avui
+            return data.strftime('%H:%M %d-%m-%Y')
+        else:
+            # Si el missatge és d'avui
+            return data.strftime('%H:%M')
 
     class Meta:
         model = Missatge

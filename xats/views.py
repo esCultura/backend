@@ -52,6 +52,7 @@ class MissatgesView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.Cre
         # Filtrem pels missatges que són d'aquell xat
         xat = get_object_or_404(Xat, id=xat_id)
         queryset = queryset.filter(xat=xat)
+        queryset = queryset.order_by('data')
         return queryset
 
     def create(self, request, xat_id=None, *args, **kwargs):
