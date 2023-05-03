@@ -169,8 +169,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-AWS_ACCESS_KEY_ID = os.environ.get('STORAGE_KEY', '')
-AWS_SECRET_ACCESS_KEY = os.environ.get('STORAGE_PASSWORD', '')
+AWS_ACCESS_KEY_ID = os.environ.get('STORAGE_KEY', 'AKIARJVACBZUQAFT5W7D')
+AWS_SECRET_ACCESS_KEY = os.environ.get('STORAGE_PASSWORD', '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')
 AWS_STORAGE_BUCKET_NAME = 'storagepes'
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 AWS_S3_OBJECT_PARAMETERS = {
@@ -183,6 +183,9 @@ STATICFILES_DIRS = [
 ]
 STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+DEFAULT_FILE_STORAGE = 'escultura.backends.MediaStorage'
+DEFAULT_IMATGE_PERFIL = 'default.png'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
