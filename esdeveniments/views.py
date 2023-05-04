@@ -16,6 +16,7 @@ from .serializers import EsdevenimentSerializer
 from .mixins import FilterBackend, PaginationClass
 
 from rest_framework.decorators import action
+from rest_framework.authtoken.models import Token
 
 class EsdevenimentsView(viewsets.ModelViewSet):
     queryset = Esdeveniment.objects.all()

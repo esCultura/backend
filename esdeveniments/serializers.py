@@ -16,7 +16,7 @@ class EsdevenimentSerializer(serializers.ModelSerializer):
     enllacos_list = serializers.ListField(read_only=True, required=False, source='get_enllacos')
     imatges_list = serializers.ListField(read_only=True, required=False, source='get_imatges')
     url_list = serializers.ListField(read_only=True, required=False, source='get_url')
-    
+
     num_reports = serializers.IntegerField(read_only=True, required=False, source='get_num_reports')
 
     codi = serializers.IntegerField(required=False)
