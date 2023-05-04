@@ -40,6 +40,7 @@ class Esdeveniment(models.Model):
     telefon = models.CharField(max_length=100, null=True, blank=True, verbose_name=_('Telèfon contacte'))
     url = models.CharField(max_length=1000, null=True, blank=True, verbose_name=_('URL organitzador'))
     organitzador = models.ForeignKey(Organitzador, on_delete=models.DO_NOTHING, null=True, blank=True, verbose_name=_('Organitzador'))
+    reports = models.CharField(max_length=1000, null=True, blank=True, default="", verbose_name=_('Usuaris que han reportat l\'esdeveniment'))
 
     def get_enllacos(self):
         return split_or_none(self.enllacos)
@@ -59,3 +60,10 @@ class Esdeveniment(models.Model):
 
     def get_url(self):
         return split_or_none(self.url)
+
+    def get_reports(self):
+        return split_or_none(self.reports)
+
+    def get_num_reports(self):
+        reports = split_or_none(self.reports)
+        return len(reports) if reports is not None else 0
