@@ -30,7 +30,7 @@ class PerfilView(viewsets.ModelViewSet):
 
         if request.method == 'PUT':
             newPassword = request.POST.get('password', None)
-            newImage = request.POST.get('imatge', None)
+            newImage = request.data.get('imatge', None)
             newBio = request.POST.get('bio', None)
 
             elementsModificats = []
@@ -38,7 +38,7 @@ class PerfilView(viewsets.ModelViewSet):
                 user.set_password(newPassword)
                 elementsModificats.append("password")
             if newImage is not None:
-                user.perfil.image = newImage
+                user.perfil.imatge = newImage
                 elementsModificats.append("imatge")
             if newBio is not None:
                 user.perfil.bio = newBio
