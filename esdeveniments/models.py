@@ -2,6 +2,8 @@ from django.db import models
 from usuaris.models import Organitzador
 from django.utils.translation import gettext_lazy as _
 
+from . import serializers
+
 
 def split_or_none(attr):
     if attr:
