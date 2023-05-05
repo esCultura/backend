@@ -9,6 +9,8 @@ from usuaris.models import Perfil, Organitzador, Administrador
 from .models import Esdeveniment
 from .serializers import EsdevenimentSerializer
 
+from . import urls
+
 
 class TestEsdevenimentsViewGet(TestCase):
 
