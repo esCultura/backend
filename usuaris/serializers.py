@@ -50,7 +50,7 @@ def validacioLogin(data):
         user = User.objects.get(username=username)
     except User.DoesNotExist:
         raise serializers.ValidationError("No existeix un usuari amb aquest username.")
-    
+
     if not user.is_active:
         raise serializers.ValidationError("Aquest usuari ha estat banejat o es troba pendent de confirmació.")
 
