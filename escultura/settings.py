@@ -197,3 +197,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     os.environ.get('URL_FRONTEND', 'http://localhost:5173'),
 ]
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'esculturanoreply@gmail.com'
+EMAIL_HOST_PASSWORD = 'npnrklhodtebyena'
+EMAIL_PORT = 587

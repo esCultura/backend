@@ -36,6 +36,8 @@ class AdministradorSerializer(serializers.ModelSerializer):
         model = Administrador
         fields = ('user', 'email', 'username')
 
+
+
 def validacioLogin(data):
     username = data.get("user", None)
     if username is not None:
@@ -48,6 +50,9 @@ def validacioLogin(data):
         user = User.objects.get(username=username)
     except User.DoesNotExist:
         raise serializers.ValidationError("No existeix un usuari amb aquest username.")
+    
+    if not user.is_active:
+        raise serializers.ValidationError("Aquest usuari ha estat banejat o es troba pendent de confirmació.")
 
     pwd_valid = check_password(password, user.password)
 
@@ -95,15 +100,20 @@ class LoginPerfilSerializer(PerfilSerializer):
         data['estadistiques'] = user.perfil.estadistiques
         return data
 
-class LoginOrganitzadorSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(max_length=255, required=True)
+class LoginOrganitzadorSerializer(OrganitzadorSerializer):
+    user = serializers.IntegerField(source="user.id", read_only=True)
+    email = serializers.CharField(source="user.email", read_only=True)
+    username = serializers.CharField(source = "user.username", max_length=255, required=True)
     password = serializers.CharField(max_length=128, write_only=True, required=True)
+    descripcio = serializers.CharField(read_only=True)
+    url = serializers.CharField(read_only=True)
+    telefon = serializers.CharField(read_only=True)
     token = serializers.CharField(required=False, read_only=True)
     created = serializers.BooleanField(required=False, read_only=True)
 
     class Meta:
-        model = User
-        fields = ('username', 'password', 'token', 'created')
+        model = Organitzador
+        fields = ('user', 'email', 'username', 'password', 'descripcio', 'url', 'telefon', 'token', 'created')
 
     def validate(self, data):
         user = validacioLogin(data)
@@ -116,7 +126,14 @@ class LoginOrganitzadorSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, data):
-        return creacioLogin(data, self.context['user'])
+        user = self.context['user']
+        data = creacioLogin(data, user)
+        data['user'] = user
+        data['email'] = user.email
+        data['descripcio'] = user.organitzador.descripcio
+        data['url'] = user.organitzador.url
+        data['telefon'] = user.organitzador.telefon
+        return data
 
 class LoginAdminSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=255, required=True)
@@ -141,6 +158,8 @@ class LoginAdminSerializer(serializers.ModelSerializer):
     def create(self, data):
         return creacioLogin(data, self.context['user'])
 
+
+
 def validacioSignUp(data):
     if data['password'] != data['password2']:
             raise serializers.ValidationError({"password": "Password fields didn't match."})
@@ -159,6 +178,7 @@ def creacioUsuari(data):
             username=username,
             email=email,
         )
+    user.is_active = True
 
 
     user.set_password(data['password'])
@@ -201,20 +221,24 @@ class SignUpPerfilsSerializer(PerfilSerializer):
         data['estadistiques'] = user.perfil.estadistiques
         return data
 
-class SignUpOrganitzadorsSerializer(serializers.ModelSerializer):
+class SignUpOrganitzadorsSerializer(OrganitzadorSerializer):
+    user = serializers.IntegerField(source="user.id", read_only=True)
     email = serializers.EmailField(
+            source="user.email",
             required=True,
             validators=[UniqueValidator(queryset=User.objects.all())]
             )
-
+    username = serializers.CharField(source = "user.username", max_length=255, required=True)
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
-    token = serializers.CharField(required=False, read_only=True)
-    created = serializers.BooleanField(required=False, read_only=True)
+    descripcio = serializers.CharField(read_only=True)
+    url = serializers.CharField(read_only=True)
+    telefon = serializers.CharField(read_only=True)
+    message = serializers.CharField(read_only=True)
 
     class Meta:
-        model = User
-        fields = ('email', 'username', 'password', 'password2', 'token', 'created')
+        model = Organitzador
+        fields = ('user', 'email', 'username', 'password', 'password2', 'descripcio', 'url', 'telefon', 'message')
 
     def validate(self, data):
         return validacioSignUp(data)
@@ -222,6 +246,13 @@ class SignUpOrganitzadorsSerializer(serializers.ModelSerializer):
     def create(self, data):
         user, data = creacioUsuari(data)
         Organitzador.objects.create(user=user)
+        user.is_active = False
+        user.save()
+        data['user'] = user
+        data['descripcio'] = user.organitzador.descripcio
+        data['url'] = user.organitzador.url
+        data['telefon'] = user.organitzador.telefon
+        data['message'] = "El teu compte està pendent d'aprovació, rebràs un correu quan un administrador et verifiqui."
         return data
 
 class SignUpAdminSerializer(serializers.ModelSerializer):
