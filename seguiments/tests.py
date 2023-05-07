@@ -3,7 +3,7 @@ from django.test import TestCase
 from rest_framework import status
 
 from django.contrib.auth.models import User
-from usuaris.models import Perfil, Organitzador, Administrador
+from usuaris.models import Perfil
 
 
 class TestPermissions(TestCase):
