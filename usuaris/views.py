@@ -138,13 +138,18 @@ class OrganitzadorsPendentsDeConfirmacioView(viewsets.ModelViewSet):
                 use_tls=settings.EMAIL_USE_TLS
                 ) as connection:
 
+                # Això és per evitar que cada cop que es corrin els tests s'enviïn correus
+                enviar_email = True if request.POST.get('enviar_email', None) is None else False
+
                 organitzador.user.is_active = True
                 organitzador.user.save()
-                email_from = settings.EMAIL_HOST_USER
-                email_to = [organitzador.user.email, ]
-                assumpte = "Activació compte d\'organitzador a esCultura"
-                missatge = "Enhorabona! El teu compte d'organitzador a esCultura ha estat aprovat. A partir d'ara podràs iniciar sessió i utilitzar la pàgina web per organitzar els teus esdeveniments."
-                EmailMessage(assumpte, missatge, email_from, email_to, connection=connection).send()
+
+                if enviar_email:
+                    email_from = settings.EMAIL_HOST_USER
+                    email_to = [organitzador.user.email, ]
+                    assumpte = "Activació compte d\'organitzador a esCultura"
+                    missatge = "Enhorabona! El teu compte d'organitzador a esCultura ha estat aprovat. A partir d'ara podràs iniciar sessió i utilitzar la pàgina web per organitzar els teus esdeveniments."
+                    EmailMessage(assumpte, missatge, email_from, email_to, connection=connection).send()
 
 
             message = "Aquest organitzador ha estat verificat i serà notificat mitjançant un correu electrònic."
