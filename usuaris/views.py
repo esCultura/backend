@@ -11,6 +11,10 @@ from requests.exceptions import HTTPError
 
 from social_django.utils import psa
 
+from usuaris import permissions
+from django.core.mail import EmailMessage, get_connection
+from django.conf import settings
+
 from .models import Perfil, Organitzador, Administrador
 from .serializers import PerfilSerializer, OrganitzadorSerializer, AdministradorSerializer, SignUpPerfilsSerializer, SignUpOrganitzadorsSerializer, SignUpAdminSerializer, LoginPerfilSerializer, LoginOrganitzadorSerializer, LoginAdminSerializer
 
@@ -67,7 +71,7 @@ class LoginPerfilsView(viewsets.ModelViewSet):
     serializer_class = LoginPerfilSerializer
 
 class LoginOrganitzadorsView(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+    queryset = Organitzador.objects.all()
     serializer_class = LoginOrganitzadorSerializer
 
 class LoginAdminView(viewsets.ModelViewSet):
@@ -79,7 +83,7 @@ class SignUpPerfilsView(viewsets.ModelViewSet):
     serializer_class = SignUpPerfilsSerializer
 
 class SignUpOrganitzadorsView(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+    queryset = Organitzador.objects.all()
     serializer_class = SignUpOrganitzadorsSerializer
 
 class SignUpAdminsView(viewsets.ModelViewSet):
@@ -110,3 +114,45 @@ def GoogleSignIn(request, backend):
 
     else:
         return Response(status=400, data={'errors': {'token': 'Invalid token'}})
+
+
+class OrganitzadorsPendentsDeConfirmacioView(viewsets.ModelViewSet):
+    queryset = Organitzador.objects.filter(user__is_active = False)
+    serializer_class = OrganitzadorSerializer
+    http_method_names = ['get', 'post']
+
+    permission_classes = [permissions.IsAdmin]
+
+    @action(methods=['GET', 'POST'], detail=True)
+    def accept(self, request, pk):
+
+        organitzador = Organitzador.objects.get(user=pk)
+        message = 'Aquest organitzador està pendent de confirmació'
+
+        if request.method == 'POST':
+            with get_connection(
+                host=settings.EMAIL_HOST,
+                port=settings.EMAIL_PORT,
+                username=settings.EMAIL_HOST_USER,
+                password=settings.EMAIL_HOST_PASSWORD,
+                use_tls=settings.EMAIL_USE_TLS
+                ) as connection:
+
+                # Això és per evitar que cada cop que es corrin els tests s'enviïn correus
+                enviar_email = True if request.POST.get('enviar_email', None) is None else False
+
+                organitzador.user.is_active = True
+                organitzador.user.save()
+
+                if enviar_email:
+                    email_from = settings.EMAIL_HOST_USER
+                    email_to = [organitzador.user.email, ]
+                    assumpte = "Activació compte d\'organitzador a esCultura"
+                    missatge = "Enhorabona! El teu compte d'organitzador a esCultura ha estat aprovat. A partir d'ara podràs iniciar sessió i utilitzar la pàgina web per organitzar els teus esdeveniments."
+                    EmailMessage(assumpte, missatge, email_from, email_to, connection=connection).send()
+
+
+            message = "Aquest organitzador ha estat verificat i serà notificat mitjançant un correu electrònic."
+
+        serializer = self.serializer_class(organitzador)
+        return Response(status=200, data={**serializer.data, **{'message': message}})
