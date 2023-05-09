@@ -12,7 +12,7 @@ class TematicaSerializer(serializers.ModelSerializer):
 
 class EsdevenimentSerializer(serializers.ModelSerializer):
     # Els camps enllacos, imatges i url els tenim guardats com un string amb diferents
-    # valors separats per comes. Els serialitzem com una llista de tals valors
+    # valors separats per comes. Els serialitzem com una llista de tals valorsPROVA
     enllacos_list = serializers.ListField(read_only=True, required=False, source='get_enllacos')
     imatges_list = serializers.ListField(read_only=True, required=False, source='get_imatges')
     url_list = serializers.ListField(read_only=True, required=False, source='get_url')
