@@ -62,7 +62,8 @@ class Esdeveniment(models.Model):
         return split_or_none(self.url)
 
     def get_reports(self):
-        return split_or_none(self.reports)
+        reports = split_or_none(self.reports)
+        return reports if reports is not None else []
 
     def get_num_reports(self):
         reports = split_or_none(self.reports)

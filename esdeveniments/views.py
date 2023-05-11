@@ -106,7 +106,7 @@ class EsdevenimentsView(viewsets.ModelViewSet):
         if self.request.auth is None:
             return Response(status=400, data={'error': 'No authentication token was provided.'})
         user = Token.objects.get(key=self.request.auth.key).user
-        esdeveniment = self.get_object(pk)
+        esdeveniment = self.get_object()
         reports = esdeveniment.get_reports()
         if user.username in reports:
             return Response(status=400, data={'error': 'Ja has reportat aquest esdeveniment anteriorment.'})
@@ -114,6 +114,7 @@ class EsdevenimentsView(viewsets.ModelViewSet):
             esdeveniment.delete()
             return Response(status=200, data={'message': 'Has reportat correctament l\'esdeveniment. L\'esdeveniment ha estat reportat tantes vegades que s\'ha eliminat.'})
         else:
-            esdeveniment.reports = ",".join(reports) + "," + user.username
+            if not reports: esdeveniment.reports = user.username
+            else: esdeveniment.reports = ",".join(reports) + "," + user.username
             esdeveniment.save()
             return Response(status=200, data={'message': 'Has reportat correctament l\'esdeveniment.'})
