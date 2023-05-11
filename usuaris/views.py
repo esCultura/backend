@@ -116,6 +116,24 @@ def GoogleSignIn(request, backend):
         return Response(status=400, data={'errors': {'token': 'Invalid token'}})
 
 
+
+def enviarEmail(request, email_to, assumpte, missatge):
+    with get_connection(
+        host=settings.EMAIL_HOST,
+        port=settings.EMAIL_PORT,
+        username=settings.EMAIL_HOST_USER,
+        password=settings.EMAIL_HOST_PASSWORD,
+        use_tls=settings.EMAIL_USE_TLS
+        ) as connection:
+
+        # Això és per evitar que cada cop que es corrin els tests s'enviïn correus
+        enviar_email = True if request.POST.get('enviar_email', None) is None else False
+
+        if enviar_email:
+            email_from = settings.EMAIL_HOST_USER
+            EmailMessage(assumpte, missatge, email_from, email_to, connection=connection).send()
+
+
 class OrganitzadorsPendentsDeConfirmacioView(viewsets.ModelViewSet):
     queryset = Organitzador.objects.filter(user__is_active = False)
     serializer_class = OrganitzadorSerializer
@@ -130,29 +148,28 @@ class OrganitzadorsPendentsDeConfirmacioView(viewsets.ModelViewSet):
         message = 'Aquest organitzador està pendent de confirmació'
 
         if request.method == 'POST':
-            with get_connection(
-                host=settings.EMAIL_HOST,
-                port=settings.EMAIL_PORT,
-                username=settings.EMAIL_HOST_USER,
-                password=settings.EMAIL_HOST_PASSWORD,
-                use_tls=settings.EMAIL_USE_TLS
-                ) as connection:
+            organitzador.user.is_active = True
+            organitzador.user.save()
 
-                # Això és per evitar que cada cop que es corrin els tests s'enviïn correus
-                enviar_email = True if request.POST.get('enviar_email', None) is None else False
-
-                organitzador.user.is_active = True
-                organitzador.user.save()
-
-                if enviar_email:
-                    email_from = settings.EMAIL_HOST_USER
-                    email_to = [organitzador.user.email, ]
-                    assumpte = "Activació compte d\'organitzador a esCultura"
-                    missatge = "Enhorabona! El teu compte d'organitzador a esCultura ha estat aprovat. A partir d'ara podràs iniciar sessió i utilitzar la pàgina web per organitzar els teus esdeveniments."
-                    EmailMessage(assumpte, missatge, email_from, email_to, connection=connection).send()
-
+            enviarEmail(request, [organitzador.user.email, ], "Activació compte d\'organitzador a esCultura", "Enhorabona! El teu compte d'organitzador a esCultura ha estat aprovat. A partir d'ara podràs iniciar sessió i utilitzar la pàgina web per organitzar els teus esdeveniments.")
 
             message = "Aquest organitzador ha estat verificat i serà notificat mitjançant un correu electrònic."
+
+        serializer = self.serializer_class(organitzador)
+        return Response(status=200, data={**serializer.data, **{'message': message}})
+
+    @action(methods=['GET', 'POST'], detail=True)
+    def reject(self, request, pk):
+
+        organitzador = Organitzador.objects.get(user=pk)
+        message = 'Aquest organitzador està pendent de confirmació'
+
+        if request.method == 'POST':
+            organitzador.delete()
+
+            enviarEmail(request, [organitzador.user.email, ], "Rebutjament compte d\'organitzador a esCultura", "El teu compte d'organitzador a esCultura ha estat rebutjat. :(")
+
+            message = "Aquest organitzador ha estat rebutjat i serà notificat mitjançant un correu electrònic."
 
         serializer = self.serializer_class(organitzador)
         return Response(status=200, data={**serializer.data, **{'message': message}})
