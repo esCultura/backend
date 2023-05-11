@@ -157,7 +157,7 @@ class OrganitzadorsPendentsDeConfirmacioView(viewsets.ModelViewSet):
 
         serializer = self.serializer_class(organitzador)
         return Response(status=200, data={**serializer.data, **{'message': message}})
-    
+
     @action(methods=['GET', 'POST'], detail=True)
     def reject(self, request, pk):
 
