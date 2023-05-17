@@ -20,3 +20,7 @@ class Valoracio(models.Model):
     puntuacio = models.IntegerField(choices=TPuntuacio)
     creador = models.ForeignKey(Perfil, related_name='valoracions', null=False, blank=False, on_delete=models.CASCADE, verbose_name=_('Creador'))
     esdeveniment = models.ForeignKey(Esdeveniment, related_name='valoracions', null=False, blank=False, on_delete=models.CASCADE, verbose_name=_('Esdeveniment'))
+
+    class Meta:
+        # Per defecte, el nom és "Valoracios", el sobreescrivim
+        verbose_name_plural = _('Valoracions')
