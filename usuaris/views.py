@@ -33,9 +33,9 @@ class PerfilView(viewsets.ModelViewSet):
         message = 'Els atributs que es poden modificar són: [password, imatge, bio]'
 
         if request.method == 'PUT':
-            newPassword = request.POST.get('password', None)
+            newPassword = request.data.get('password', None)
             newImage = request.data.get('imatge', None)
-            newBio = request.POST.get('bio', None)
+            newBio = request.data.get('bio', None)
 
             elementsModificats = []
             if newPassword is not None:
