@@ -27,7 +27,8 @@ class Perfil(models.Model):
             'interessos_esdeveniments': len(self.interessos_esdeveniment.all()),
             'interessos_tematiques': len(self.interessos_tematica.all()),
             'seguidors': len(self.seguidors.all()),
-            'seguits': len(self.seguits.all())
+            'seguits': len(self.seguits.all()),
+            'valoracions': len(self.valoracions.all())
         }
 
 
