@@ -6,7 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
-from django.db.models import Count
+from django.db.models import Count, Avg
 from django.utils.translation import gettext_lazy as _
 
 from usuaris.permissions import IsAdminOrOrganitzadorEditOthersRead
@@ -48,12 +48,13 @@ class EsdevenimentsView(viewsets.ModelViewSet):
     }
     search_fields = ['nom', 'descripcio', 'provincia', 'comarca', 'municipi', 'espai']
     ordering_fields = ['codi', 'nom', 'dataIni', 'dataFi', 'provincia', 'comarca', 'municipi', 'latitud', 'longitud',
-                       'espai', 'assistents', 'likes']
+                       'espai', 'assistents', 'likes', 'puntuacio']
 
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = queryset.annotate(assistents=Count('assistencies'))
         queryset = queryset.annotate(likes=Count('interessats'))
+        queryset = queryset.annotate(puntuacio=Avg('valoracions__puntuacio'))
         if getattr(self.request.user, 'organitzador', False):
             return queryset.filter(organitzador=self.request.user.organitzador)
         else:
