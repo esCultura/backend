@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'assistencies',
     'xats',
     'seguiments',
+    'valoracions',
 ]
 
 MIDDLEWARE = [
