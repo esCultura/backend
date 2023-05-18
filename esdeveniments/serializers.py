@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.db.models import Avg
 import random
 
 from .models import Esdeveniment, Tematica
@@ -28,6 +29,7 @@ class EsdevenimentSerializer(serializers.ModelSerializer):
         write_only=True,
         required=False
     )
+    puntuacio = serializers.SerializerMethodField(read_only=True)
 
     # Per petició de l'equip de mobilitat (serveis externs), afegim camps punts i descompte
     # Valor random entre 20 i 250, sempre el mateix
@@ -35,6 +37,13 @@ class EsdevenimentSerializer(serializers.ModelSerializer):
 
     # Valor random dins el conjunt {10, 15, 20, 25, 50}, sempre el mateix
     descompte = serializers.SerializerMethodField(read_only=True)
+
+    def get_puntuacio(self, esdeveniment):
+        mitjana = esdeveniment.valoracions.aggregate(mitjana=Avg('puntuacio'))['mitjana']
+        if mitjana:
+            return round(mitjana, 2)
+        else:
+            return None
 
     def get_punts(self, esdeveniment):
         # Fem set de la seed per obtenir sempre el mateix random donat aquell esdeveniment
