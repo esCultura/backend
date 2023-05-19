@@ -17,7 +17,8 @@ class Valoracio(models.Model):
     id = models.AutoField(primary_key=True, verbose_name=_('Identidicador'))
     data = models.DateTimeField(auto_now_add=True, verbose_name=_('Data creació'))
     text = models.CharField(max_length=10000, verbose_name=_('Text'))
-    puntuacio = models.IntegerField(choices=TPuntuacio)
+    puntuacio = models.IntegerField(choices=TPuntuacio, verbose_name=_('Puntuació'))
+    imatge = models.ImageField(null=True, blank=True, verbose_name=_('Imatge'))
     creador = models.ForeignKey(Perfil, related_name='valoracions', null=False, blank=False, on_delete=models.CASCADE, verbose_name=_('Creador'))
     esdeveniment = models.ForeignKey(Esdeveniment, related_name='valoracions', null=False, blank=False, on_delete=models.CASCADE, verbose_name=_('Esdeveniment'))
 
