@@ -21,3 +21,12 @@ class InteresEnTematica(models.Model):
     # la combinació d'un perfil i una tematica determinats.
     class Meta:
         unique_together = ('perfil', 'tematica')
+
+class InteresEnValoracio(models.Model):
+    perfil = models.ForeignKey('usuaris.Perfil', related_name='interessos_valoracio', null=False, blank=False, on_delete=models.CASCADE, verbose_name=_('Id perfil'))
+    valoracio = models.ForeignKey('valoracions.Valoracio', null=False, blank=False, on_delete=models.CASCADE, verbose_name=_('Id valoració'))
+
+    # Afegim una constraint per tal que no es pugui repetir
+    # la combinació d'un perfil i una valoracio determinats.
+    class Meta:
+        unique_together = ('perfil', 'valoracio')
