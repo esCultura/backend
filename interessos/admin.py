@@ -9,3 +9,7 @@ class InteresEnEsdeveniment(admin.ModelAdmin):
 @admin.register(models.InteresEnTematica)
 class InteresEnTematica(admin.ModelAdmin):
     pass
+
+@admin.register(models.InteresEnValoracio)
+class InteresEnValoracio(admin.ModelAdmin):
+    pass

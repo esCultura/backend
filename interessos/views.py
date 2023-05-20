@@ -5,8 +5,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 
-from .models import InteresEnEsdeveniment, InteresEnTematica
-from .serializers import InteresEnEsdevenimentSerializer, InteresEnTematicaSerializer
+from .models import InteresEnEsdeveniment, InteresEnTematica, InteresEnValoracio
+from .serializers import InteresEnEsdevenimentSerializer, InteresEnTematicaSerializer, InteresEnValoracioSerializer
 
 
 class InteresEnEsdevenimentView(viewsets.ModelViewSet):
@@ -47,3 +47,23 @@ class InteresEnTematicaView(viewsets.ModelViewSet):
             interes.delete()
             return Response(status=200, data={'message': f'S\'ha eliminat de forma correcta l\'interès del perfil {perfil} en la temàtica {tematica}'})
         return Response(status=500, data={'error': 'La Request ha de tenir dos paràmetres: perfil (username del perfil) i tematica (nom de la temàtica)', 'perfil indicat': perfil, 'temàtica indicada': tematica})
+
+
+class InteresEnValoracioView(viewsets.ModelViewSet):
+    queryset = InteresEnValoracio.objects.all()
+    serializer_class = InteresEnValoracioSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['perfil', 'valoracio']
+    ordering_fields = ['perfil', 'valoracio']
+
+    # Redefinició del mètode DELETE per tal de poder-lo realitzar a la ListView i a través de paràmetres, en aquest cas l'username i l'id de la valoració.
+    # (Les ListViews només suporten les operacions GET i POST, les DELETE requests només estan permeses a les DetailViews)
+    @action(methods=['delete'], detail=False)
+    def delete(self, request):
+        perfil = request.GET.get('perfil', None)
+        valoracio = request.GET.get('valoracio', None)
+        if(not (perfil is None or valoracio is None)):
+            interes = get_object_or_404(self.queryset, perfil=perfil, valoracio=valoracio)
+            interes.delete()
+            return Response(status=200, data={'message': f'S\'ha eliminat de forma correcta l\'interès del perfil {perfil} en la valoració {valoracio}'})
+        return Response(status=500, data={'error': 'La Request ha de tenir dos paràmetres: perfil (username del perfil) i valoracio (id de la valoracio)', 'perfil indicat': perfil, 'valoracio indicada': valoracio})
