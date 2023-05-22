@@ -12,7 +12,9 @@ from requests.exceptions import HTTPError
 from social_django.utils import psa
 
 from usuaris import permissions
-from django.core.mail import EmailMessage, get_connection
+from django.core.mail import EmailMultiAlternatives, get_connection
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from django.conf import settings
 
 from .models import Perfil, Organitzador, Administrador
@@ -117,7 +119,7 @@ def GoogleSignIn(request, backend):
 
 
 
-def enviarEmail(request, email_to, assumpte, missatge):
+def enviarEmail(request, email_to, assumpte, titol, veredicte, missatge_final):
     with get_connection(
         host=settings.EMAIL_HOST,
         port=settings.EMAIL_PORT,
@@ -130,8 +132,11 @@ def enviarEmail(request, email_to, assumpte, missatge):
         enviar_email = True if request.POST.get('enviar_email', None) is None else False
 
         if enviar_email:
-            email_from = settings.EMAIL_HOST_USER
-            EmailMessage(assumpte, missatge, email_from, email_to, connection=connection).send()
+            html_content = render_to_string("email_template.html", {'title': titol, 'email_to': email_to[0], 'resolution': veredicte, 'final_message': missatge_final})
+            text_content = strip_tags(html_content)
+            msg = EmailMultiAlternatives(assumpte, text_content, settings.EMAIL_HOST_USER, email_to, connection=connection)
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
 
 
 class OrganitzadorsPendentsDeConfirmacioView(viewsets.ModelViewSet):
@@ -148,10 +153,10 @@ class OrganitzadorsPendentsDeConfirmacioView(viewsets.ModelViewSet):
         message = 'Aquest organitzador està pendent de confirmació'
 
         if request.method == 'POST':
+            enviarEmail(request, [organitzador.user.email, ], "Activació compte d\'organitzador a esCultura", "Enhorabona!", "APROVAT", "A partir d'ara podràs iniciar sessió i utilitzar la pàgina web per organitzar els teus esdeveniments.")
+
             organitzador.user.is_active = True
             organitzador.user.save()
-
-            enviarEmail(request, [organitzador.user.email, ], "Activació compte d\'organitzador a esCultura", "Enhorabona! El teu compte d'organitzador a esCultura ha estat aprovat. A partir d'ara podràs iniciar sessió i utilitzar la pàgina web per organitzar els teus esdeveniments.")
 
             message = "Aquest organitzador ha estat verificat i serà notificat mitjançant un correu electrònic."
 
@@ -167,7 +172,7 @@ class OrganitzadorsPendentsDeConfirmacioView(viewsets.ModelViewSet):
         if request.method == 'POST':
             organitzador.delete()
 
-            enviarEmail(request, [organitzador.user.email, ], "Rebutjament compte d\'organitzador a esCultura", "El teu compte d'organitzador a esCultura ha estat rebutjat. :(")
+            enviarEmail(request, [organitzador.user.email, ], "Rebutjament compte d\'organitzador a esCultura","Ho sentim!", "REBUTJAT", "El teu compte no compleix el criteris per poder formar part d'esCultura. :(")
 
             message = "Aquest organitzador ha estat rebutjat i serà notificat mitjançant un correu electrònic."
 
