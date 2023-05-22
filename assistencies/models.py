@@ -10,6 +10,7 @@ class AssistenciaAEsdeveniment(models.Model):
     perfil = models.ForeignKey('usuaris.Perfil', related_name='assistencies', null=False, blank=False, on_delete=models.CASCADE, verbose_name=_('Id perfil'))
     esdeveniment = models.ForeignKey('esdeveniments.Esdeveniment', related_name='assistencies', null=False, blank=False, on_delete=models.CASCADE, verbose_name=_('Codi esdeveniment'))
     data = models.DateTimeField(null=False, blank=False, default=datetime.now, verbose_name=_('Data assistencia'))
+    dataValidacio = models.DateTimeField(null=True, blank=True, verbose_name=_('Data validació'))
 
     # Afegim una constraint per tal que no es pugui repetir
     # la combinació d'un perfil i un esdeveniment determinats.

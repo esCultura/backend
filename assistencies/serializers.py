@@ -7,7 +7,7 @@ from escultura import settings
 class AssistenciaAEsdevenimentSerializer(serializers.ModelSerializer):
     class Meta:
         model = AssistenciaAEsdeveniment
-        fields = ('uuid', 'perfil', 'esdeveniment', 'data')
+        fields = ('uuid', 'perfil', 'esdeveniment', 'data', 'dataValidacio')
 
 
 class EntradaSerializer(serializers.ModelSerializer):
