@@ -196,7 +196,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CORS
 
 CORS_ALLOWED_ORIGINS = [
-    os.environ.get('URL_FRONTEND', 'http://localhost:5173'),
+    os.environ.get('https://esCultura.github.io', 'http://localhost:5173'),
 ]
 
 EMAIL_USE_TLS = True
