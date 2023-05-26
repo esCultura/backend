@@ -31,10 +31,10 @@ class EntradaSerializer(serializers.ModelSerializer):
         return assistencia.data.strftime("%d / %m / %Y")
 
     def get_hora(self, assistencia):
-        return assistencia.data.strftime("%H:%Mh")
+        return "20:00h"
 
     def get_nom(self, assistencia):
-        return assistencia.perfil.user.first_name
+        return assistencia.perfil.user.username
 
     class Meta:
         model = AssistenciaAEsdeveniment
