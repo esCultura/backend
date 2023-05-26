@@ -123,7 +123,7 @@ if 'test' in sys.argv:
         'NAME': 'dbTest.sqlite3'
     }
 
-FRONTEND_URL = 'url_frontend'
+FRONTEND_URL = os.environ.get('URL_FRONTEND', 'http://localhost:5173')
 
 
 # Password validation

@@ -14,8 +14,8 @@ class AssistenciaAEsdevenimentView(viewsets.ModelViewSet):
     queryset = AssistenciaAEsdeveniment.objects.all()
     serializer_class = AssistenciaAEsdevenimentSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['perfil', 'esdeveniment', 'data']
-    ordering_fields = ['perfil', 'esdeveniment', 'data']
+    filterset_fields = ['perfil', 'esdeveniment', 'data', 'uuid']
+    ordering_fields = ['perfil', 'esdeveniment', 'data', 'uuid']
     permission_classes = [permissions.IsAdminOrOrganitzadorEditPerfilRead]
 
     def get_serializer_class(self):
