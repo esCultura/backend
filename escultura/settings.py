@@ -124,7 +124,7 @@ if 'test' in sys.argv:
         'NAME': 'dbTest.sqlite3'
     }
 
-FRONTEND_URL = os.environ.get('URL_FRONTEND', 'http://localhost:5173')
+FRONTEND_URL = 'url_frontend'
 
 
 # Password validation
@@ -198,6 +198,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
     os.environ.get('URL_FRONTEND', 'http://localhost:5173'),
+    'http://localhost:5173',
 ]
 
 EMAIL_USE_TLS = True
