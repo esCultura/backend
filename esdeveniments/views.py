@@ -9,7 +9,7 @@ from drf_yasg import openapi
 from django.db.models import Count, Avg
 from django.utils.translation import gettext_lazy as _
 
-from usuaris.permissions import IsAdminOrOrganitzadorEditOthersRead
+from usuaris.permissions import IsAdmin, IsOrganitzador, IsPerfil
 
 from .models import Esdeveniment
 from .serializers import EsdevenimentSerializer
@@ -23,7 +23,7 @@ class EsdevenimentsView(viewsets.ModelViewSet):
     pagination_class = PaginationClass
     serializer_class = EsdevenimentSerializer
     models = Esdeveniment
-    permission_classes = [IsAdminOrOrganitzadorEditOthersRead]
+    permission_classes = [IsAdmin, IsOrganitzador, IsPerfil]
 
     filter_backends = [FilterBackend, DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = {
