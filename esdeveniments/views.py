@@ -24,7 +24,7 @@ class EsdevenimentsView(viewsets.ModelViewSet):
     serializer_class = EsdevenimentSerializer
     models = Esdeveniment
     permission_classes = [IsAdminOrOrganitzadorEditOthersRead]
-    
+
 
     filter_backends = [FilterBackend, DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = {
