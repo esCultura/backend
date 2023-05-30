@@ -16,7 +16,7 @@ class AssistenciaAEsdevenimentView(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['perfil', 'esdeveniment', 'data', 'uuid']
     ordering_fields = ['perfil', 'esdeveniment', 'data', 'uuid']
-    permission_classes = [permissions.IsAdmin, permissions.IsOrganitzador, permissions.IsPerfil]
+    permission_classes = [permissions.IsAdmin | permissions.IsOrganitzador | permissions.IsPerfil]
 
     def get_serializer_class(self):
         if self.action == 'retrieve':
