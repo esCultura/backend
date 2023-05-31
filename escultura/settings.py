@@ -194,6 +194,8 @@ DEFAULT_IMATGE_PERFIL = 'default.png'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
+
 # CORS
 
 CORS_ALLOWED_ORIGINS = [
